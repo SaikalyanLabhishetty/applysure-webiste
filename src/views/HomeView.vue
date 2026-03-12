@@ -407,7 +407,7 @@ const getDashArray = () => {
           
           <div class="max-w-xs">
             <div class="flex items-center gap-3 mb-4">
-               <img src="/logo.png" alt="ApplySure Logo" class="h-16 w-auto brightness-0 invert" />
+               <img src="/logo.png" alt="ApplySure Logo" class="h-16 w-auto" />
                <span class="text-2xl font-extrabold text-white">ApplySure</span>
             </div>
             <p class="text-slate-400">Know Before You Apply.</p>
