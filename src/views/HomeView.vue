@@ -2,6 +2,8 @@
 import { RouterLink } from 'vue-router'
 import { ref, onMounted } from 'vue'
 
+const currentYear = new Date().getFullYear()
+
 const isFAQOpen = ref<Record<number, boolean>>({})
 
 const toggleFAQ = (index: number) => {
@@ -421,18 +423,12 @@ const getDashArray = () => {
             <div class="flex flex-col gap-4">
               <h4 class="text-white font-semibold text-lg">Legal</h4>
               <RouterLink to="/privacy" class="text-slate-400 hover:text-white transition-colors">Privacy Policy</RouterLink>
-              <a href="#" class="text-slate-400 hover:text-white transition-colors">Terms of Service</a>
-            </div>
-            <div class="flex flex-col gap-4">
-              <h4 class="text-white font-semibold text-lg">Connect</h4>
-              <a href="#" class="text-slate-400 hover:text-white transition-colors">Contact Us</a>
-              <a href="#" class="text-slate-400 hover:text-white transition-colors">GitHub</a>
             </div>
           </div>
         </div>
         
         <div class="border-t border-slate-800 pt-8 text-center text-slate-500">
-          <p>&copy; 2026 ApplySure. All rights reserved.</p>
+          <p>&copy; {{ currentYear }} ApplySure. All rights reserved.</p>
         </div>
       </div>
     </footer>
