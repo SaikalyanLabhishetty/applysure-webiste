@@ -1,0 +1,105 @@
+Privacy Policy for ApplySure
+Last updated: March 12, 2026
+
+ApplySure ("we", "our", or "the extension") is a Chrome browser extension that helps users
+analyze how well their resume matches a job description on LinkedIn and Naukri.
+
+---------------------------------------------------------------------------------------------
+1. INFORMATION WE COLLECT
+---------------------------------------------------------------------------------------------
+
+a) Resume Text
+   - When you upload a PDF resume, the extension extracts its text content.
+   - This text is stored locally on your device using Chrome's built-in storage (chrome.storage.local).
+   - It is never stored on any external server by us.
+
+b) Job Description Text
+   - The extension reads the job description text from the currently active LinkedIn or Naukri
+     job page you are viewing.
+   - This text is only used temporarily to perform the analysis and is not stored anywhere.
+
+c) No Personal Account Data
+   - The extension does not access, collect, or store your LinkedIn or Naukri login credentials,
+     profile information, connections, messages, or any other account data.
+
+---------------------------------------------------------------------------------------------
+2. HOW WE USE YOUR INFORMATION
+---------------------------------------------------------------------------------------------
+
+   - Your resume text and the job description text are sent together to an AI model (Google Gemini)
+     via our secure backend proxy hosted on Vercel (https://applysure.vercel.app/api/proxy).
+   - This is done solely to generate the ATS match score, skill gap analysis, and job-ready
+     resume suggestions.
+   - We do not log, store, or retain any resume or job description content on our Vercel backend.
+     The proxy forwards your request to the AI API and returns the response immediately.
+
+---------------------------------------------------------------------------------------------
+3. THIRD-PARTY SERVICES
+---------------------------------------------------------------------------------------------
+
+   The extension communicates with the following third-party AI API services to perform analysis.
+   Their respective privacy policies apply to data processed by them:
+
+   - Google Gemini API      — https://policies.google.com/privacy
+   - Mistral AI API         — https://mistral.ai/privacy/
+   - OpenAI API             — https://openai.com/privacy/
+   - Groq API               — https://groq.com/privacy-policy/
+
+   Only one AI provider is used per request (determined by the backend proxy). Your data is
+   not shared with all providers simultaneously.
+
+---------------------------------------------------------------------------------------------
+4. DATA STORAGE
+---------------------------------------------------------------------------------------------
+
+   - Resume text is stored locally on your device using chrome.storage.local.
+   - You can delete your stored resume at any time by clicking "Clear Results" or removing
+     the extension.
+   - We have no access to data stored in your browser's local storage.
+
+---------------------------------------------------------------------------------------------
+5. DATA SHARING
+---------------------------------------------------------------------------------------------
+
+   - We do not sell, trade, or share your personal data with any third parties beyond what is
+     described in Section 3 (AI APIs required for the core feature).
+   - We do not use your data for advertising or tracking purposes.
+
+---------------------------------------------------------------------------------------------
+6. PERMISSIONS USED
+---------------------------------------------------------------------------------------------
+
+   The extension requests the following Chrome permissions:
+
+   - storage       : To save your resume text locally on your device.
+   - tabs          : To detect which tab is active and whether it is a supported job page.
+   - activeTab     : To read the job description from the currently active tab.
+   - sidePanel     : To display the ApplySure panel alongside the browser window.
+
+   Host permissions are limited to LinkedIn, Naukri, and the AI API endpoints listed above.
+
+---------------------------------------------------------------------------------------------
+7. CHILDREN'S PRIVACY
+---------------------------------------------------------------------------------------------
+
+   ApplySure is not directed at children under the age of 13. We do not knowingly collect
+   any information from children.
+
+---------------------------------------------------------------------------------------------
+8. CHANGES TO THIS POLICY
+---------------------------------------------------------------------------------------------
+
+   We may update this Privacy Policy from time to time. Any changes will be reflected with
+   an updated "Last updated" date at the top of this document. Continued use of the extension
+   after changes constitutes acceptance of the revised policy.
+
+---------------------------------------------------------------------------------------------
+9. CONTACT
+---------------------------------------------------------------------------------------------
+
+   If you have any questions or concerns about this Privacy Policy, please contact us at:
+
+   Email : [your-email@example.com]
+   Website: https://applysure.vercel.app
+
+---------------------------------------------------------------------------------------------
