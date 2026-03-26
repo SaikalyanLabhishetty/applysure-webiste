@@ -1,471 +1,844 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 const currentYear = new Date().getFullYear()
-const chromeWebStoreUrl = 'https://chromewebstore.google.com/detail/applysure/oedpnodmknpdcmhamamfmghlnhjhepkn'
+const chromeWebStoreUrl =
+  'https://chromewebstore.google.com/detail/applysure/oedpnodmknpdcmhamamfmghlnhjhepkn'
+
 const openChromeWebStore = () => {
   if (typeof window !== 'undefined') {
     window.open(chromeWebStoreUrl, '_blank', 'noopener,noreferrer')
   }
 }
 
-const isFAQOpen = ref<Record<number, boolean>>({})
+const navLinks = [
+  { label: 'Why ApplySure', href: '#features' },
+  { label: 'How It Works', href: '#how-it-works' },
+  { label: 'Demo', href: '#demo' },
+  { label: 'FAQ', href: '#faq' },
+]
+
+const proofPoints = [
+  {
+    label: 'Where it works',
+    value: 'LinkedIn and Naukri',
+    description: 'Open the job post, launch the side panel, and evaluate fit without breaking flow.',
+  },
+  {
+    label: 'Privacy posture',
+    value: 'Resume stays local',
+    description: 'Your resume is saved inside Chrome storage on your own device, not on our servers.',
+  },
+  {
+    label: 'What you get',
+    value: 'Score, gaps, rewrite',
+    description: 'Know the match, see what is missing, and generate a sharper version before applying.',
+  },
+  {
+    label: 'Friction',
+    value: 'No sign-up required',
+    description: 'Install, upload once, and start reviewing jobs immediately.',
+  },
+]
+
+const featureCards = [
+  {
+    eyebrow: 'Match confidence',
+    title: 'See whether the role is worth your time before you burn an application.',
+    body: 'ApplySure reads the posting, compares it against your resume, and turns vague intuition into an actual signal. That changes how you prioritize.',
+    featured: true,
+  },
+  {
+    eyebrow: 'Gap mapping',
+    title: 'The missing pieces are called out clearly.',
+    body: 'Required skills, tools, or experience themes are surfaced fast so you know whether to tailor, strengthen, or skip.',
+    featured: false,
+  },
+  {
+    eyebrow: 'Rewrite support',
+    title: 'A tighter resume version for the exact job in front of you.',
+    body: 'Reposition your experience around the role instead of sending the same generic resume everywhere.',
+    featured: false,
+  },
+  {
+    eyebrow: 'Side-panel workflow',
+    title: 'You stay on the job page while the extension does the work.',
+    body: 'No copy-paste loop, no bouncing between tabs, no messy process. The product feels immediate because it lives where decisions happen.',
+    featured: false,
+  },
+]
+
+const operatingPrinciples = [
+  'Serious visual hierarchy so the product feels like a decision tool, not a toy.',
+  'Clearer proof points around privacy, supported platforms, and workflow speed.',
+  'A hero mockup that looks specific to ApplySure instead of a generic SaaS card.',
+]
+
+const steps = [
+  {
+    index: '01',
+    title: 'Upload your resume once.',
+    body: 'ApplySure reads your PDF and stores it locally in Chrome so the extension is ready whenever you open a job posting.',
+    detail: 'Stored on-device',
+  },
+  {
+    index: '02',
+    title: 'Open a real job post on LinkedIn or Naukri.',
+    body: 'The extension works on individual listing pages, where it can evaluate the description against your existing profile and experience.',
+    detail: 'Built for live job pages',
+  },
+  {
+    index: '03',
+    title: 'Analyze the match and act immediately.',
+    body: 'Get the score, missing signals, and a tailored rewrite so you know whether to apply, edit, or move on with confidence.',
+    detail: 'From uncertainty to action',
+  },
+]
+
+const faqs = [
+  {
+    question: 'Is ApplySure free?',
+    answer: 'Yes. ApplySure is completely free to use with no subscription or sign-up required.',
+  },
+  {
+    question: 'Does ApplySure store my resume on a server?',
+    answer:
+      "No. Your resume is stored only on your own device using Chrome's built-in local storage. It is never uploaded to any external server by us.",
+  },
+  {
+    question: 'Which job sites does it work on?',
+    answer: 'Currently LinkedIn and Naukri. More platforms may be added in future updates.',
+  },
+  {
+    question: 'Does it work on search results pages?',
+    answer: 'No. Open a specific job posting page and then run Analyze Match from the extension panel.',
+  },
+  {
+    question: 'How do I delete my saved resume?',
+    answer: 'Use Replace Resume or Clear Results inside the extension panel whenever you want to remove or refresh your data.',
+  },
+]
+
+const isFAQOpen = ref<Record<number, boolean>>({ 0: true })
 
 const toggleFAQ = (index: number) => {
   isFAQOpen.value[index] = !isFAQOpen.value[index]
 }
 
-const faqs = [
-  {
-    question: "Is ApplySure free?",
-    answer: "Yes. ApplySure is completely free to use with no subscription or sign-up required."
-  },
-  {
-    question: "Does ApplySure store my resume on a server?",
-    answer: "No. Your resume is stored only on your own device using Chrome's built-in local storage. It is never uploaded to any external server by us."
-  },
-  {
-    question: "Which job sites does it work on?",
-    answer: "Currently LinkedIn and Naukri. More platforms may be added in future updates."
-  },
-  {
-    question: "Does it work on job search listing pages?",
-    answer: "No. Navigate to a specific individual job posting page (not a search results list) and then click Analyze Match."
-  },
-  {
-    question: "How do I delete my saved resume?",
-    answer: "Click \"Replace Resume\" or \"Clear Results\" inside the extension panel at any time."
-  }
+const currentScore = ref(0)
+const scoreStage = ref(0)
+const scoreLabel = ref('Parsing role')
+const scoreColorClass = ref('text-slate-200')
+const strokeColorClass = ref('text-slate-600')
+const scoreTimeouts: number[] = []
+
+const stageMatrix: [number, number, number][] = [
+  [18, 12, 78],
+  [42, 31, 61],
+  [68, 57, 34],
+  [91, 94, 8],
 ]
 
-// 3-Stage Match Score Animation Logic
-const currentScore = ref(0)
-const scoreStage = ref(0) // 0: scanning, 1: weak, 2: better, 3: excellent
-const scoreColorClass = ref('text-slate-400')
-const strokeColorClass = ref('text-slate-200')
-const scoreLabel = ref('Scanning...')
+const analysisRows = computed(() => {
+  const currentStage: [number, number, number] = stageMatrix[scoreStage.value] ?? [91, 94, 8]
+  const [requirements, keywordCoverage, missingSignals] = currentStage
+
+  return [
+    { label: 'Role requirements', value: requirements, tone: 'bg-[#7fb1ff]' },
+    { label: 'Keyword coverage', value: keywordCoverage, tone: 'bg-[#d8bf8a]' },
+    { label: 'Missing signals', value: missingSignals, tone: 'bg-[#53647f]' },
+  ]
+})
+
+const missingSignalChips = computed(() => {
+  const chipSets: string[][] = [
+    ['System design', 'Product metrics', 'Stakeholder leadership'],
+    ['Product metrics', 'Cross-functional leadership', 'Hiring signals'],
+    ['Stakeholder storytelling', 'Growth loops'],
+    ['Leadership narrative', 'Exec-ready outcomes'],
+  ]
+
+  return chipSets[scoreStage.value] ?? chipSets[chipSets.length - 1]
+})
+
+const rewriteFocus = computed(() => {
+  const bulletSets: string[][] = [
+    [
+      'Mirror the role title and core scope in the resume header.',
+      'Pull measurable outcomes higher so value shows faster.',
+      'Shift generic bullets into job-specific language.',
+    ],
+    [
+      'Lead with the operating metrics the role cares about.',
+      'Make collaboration with product and engineering explicit.',
+      'Surface tools and methods that map to the posting.',
+    ],
+    [
+      'Keep only the strongest proof and trim the rest.',
+      'Promote work that shows ownership.',
+      'Sharpen the summary so seniority reads instantly.',
+    ],
+    [
+      'Lock the strongest quantified wins at the top.',
+      'Tune the summary to match the hiring team vocabulary.',
+      'Preserve credibility while tightening for ATS readability.',
+    ],
+  ]
+
+  return bulletSets[scoreStage.value] ?? bulletSets[bulletSets.length - 1]
+})
+
+const getDashArray = computed(() => `${currentScore.value}, 100`)
+
+const clearScoreTimers = () => {
+  for (const timeoutId of scoreTimeouts) {
+    window.clearTimeout(timeoutId)
+  }
+
+  scoreTimeouts.length = 0
+}
+
+const queueStage = (delay: number, callback: () => void) => {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const timeoutId = window.setTimeout(callback, delay)
+  scoreTimeouts.push(timeoutId)
+}
 
 const animateScore = () => {
-  // Stage 0: Reset & Initial Scan
+  clearScoreTimers()
   currentScore.value = 0
   scoreStage.value = 0
-  scoreLabel.value = 'Scanning Resume...'
-  scoreColorClass.value = 'text-slate-400'
-  strokeColorClass.value = 'text-slate-100'
-  
-  // Stage 1: Worst (25%)
-  setTimeout(() => {
-    currentScore.value = 25
+  scoreLabel.value = 'Parsing role'
+  scoreColorClass.value = 'text-slate-200'
+  strokeColorClass.value = 'text-slate-600'
+
+  queueStage(1300, () => {
+    currentScore.value = 42
     scoreStage.value = 1
-    scoreColorClass.value = 'text-red-500'
-    strokeColorClass.value = 'text-red-500'
-    scoreLabel.value = 'Low Match'
-  }, 2000)
+    scoreLabel.value = 'Signal forming'
+    scoreColorClass.value = 'text-[#d8bf8a]'
+    strokeColorClass.value = 'text-[#d8bf8a]'
+  })
 
-  // Stage 2: Better (60%)
-  setTimeout(() => {
-    currentScore.value = 60
+  queueStage(3100, () => {
+    currentScore.value = 68
     scoreStage.value = 2
-    scoreColorClass.value = 'text-yellow-500'
-    strokeColorClass.value = 'text-yellow-500'
-    scoreLabel.value = 'Good Potential'
-  }, 4500)
+    scoreLabel.value = 'Strong potential'
+    scoreColorClass.value = 'text-[#7fb1ff]'
+    strokeColorClass.value = 'text-[#7fb1ff]'
+  })
 
-  // Stage 3: Excellent (90%)
-  setTimeout(() => {
-    currentScore.value = 90
+  queueStage(5000, () => {
+    currentScore.value = 91
     scoreStage.value = 3
-    scoreColorClass.value = 'text-emerald-500'
-    strokeColorClass.value = 'text-emerald-500'
-    scoreLabel.value = 'Perfect Match!'
-  }, 7000)
+    scoreLabel.value = 'Ready to apply'
+    scoreColorClass.value = 'text-[#f3eee3]'
+    strokeColorClass.value = 'text-[#7fb1ff]'
+  })
 
-  // Loop back to start after a delay
-  setTimeout(() => {
-    animateScore()
-  }, 10500)
+  queueStage(8200, animateScore)
 }
 
 onMounted(() => {
   animateScore()
 })
 
-const getDashArray = () => {
-  return `${currentScore.value}, 100` // 100 is max, based on the SVG path length
-}
-
+onUnmounted(() => {
+  clearScoreTimers()
+})
 </script>
 
 <template>
-  <div class="relative min-h-screen bg-slate-50 text-slate-900 font-sans overflow-x-hidden">
-    <!-- Background Blobs (Recreated with Tailwind) -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      <div class="absolute rounded-full blur-[80px] opacity-20 animate-[float_10s_infinite_alternate_ease-in-out] -top-10 -left-10 w-[50vw] h-[50vw] bg-[#3399f5]"></div>
-      <div class="absolute rounded-full blur-[80px] opacity-10 animate-[float_10s_infinite_alternate_ease-in-out] top-[20%] -right-[20%] w-[60vw] h-[60vw] bg-[#143e80] animation-delay-[-5s]"></div>
-      <div class="absolute rounded-full blur-[80px] opacity-20 animate-[float_10s_infinite_alternate_ease-in-out] -bottom-[20%] left-[10%] w-[40vw] h-[40vw] bg-[#3399f5] animation-delay-[-2s]"></div>
+  <div class="relative min-h-screen overflow-x-hidden bg-[#07111f] text-[#f3eee3]">
+    <div class="pointer-events-none absolute inset-0 overflow-hidden">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(127,177,255,0.18),transparent_28%),radial-gradient(circle_at_82%_8%,rgba(216,191,138,0.16),transparent_22%),linear-gradient(180deg,#07111f_0%,#0a1424_56%,#0d1728_100%)]"></div>
+      <div class="page-grid absolute inset-0 opacity-[0.08]"></div>
+      <div class="absolute -left-28 top-10 h-80 w-80 rounded-full bg-[#1f58d6]/20 blur-[120px] motion-safe:animate-[drift_18s_ease-in-out_infinite_alternate]"></div>
+      <div class="absolute right-0 top-32 h-72 w-72 rounded-full bg-[#d8bf8a]/12 blur-[110px] motion-safe:animate-[drift_14s_ease-in-out_infinite_alternate-reverse]"></div>
     </div>
 
-    <!-- Navbar -->
-    <header class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md border-b border-white/50 shadow-sm">
-      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-          <!-- Logo increased to h-16 as requested -->
-          <img src="/logo.png" alt="ApplySure Logo" class="h-16 w-auto object-contain" />
-          <span class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-[#3399f5] to-[#143e80] bg-clip-text text-transparent">ApplySure</span>
-        </div>
-        <nav class="hidden md:flex items-center gap-8">
-          <a href="#how-it-works" class="text-slate-600 hover:text-[#143e80] font-medium transition-colors">How It Works</a>
-          <a href="#features" class="text-slate-600 hover:text-[#143e80] font-medium transition-colors">Features</a>
-          <a href="#faq" class="text-slate-600 hover:text-[#143e80] font-medium transition-colors">FAQ</a>
-          <a :href="chromeWebStoreUrl" target="_blank" rel="noopener noreferrer" @click.prevent="openChromeWebStore" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#3399f5] to-[#143e80] text-white font-semibold flex items-center gap-2 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#3399f5]/30 transition-all border-none">Add to Chrome</a>
+    <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#07111f]/78 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <a href="#top" class="flex items-center gap-4">
+          <img src="/logo.png" alt="ApplySure Logo" class="h-12 w-auto object-contain sm:h-14" />
+          <div>
+            <p class="font-display text-2xl tracking-tight text-white sm:text-3xl">ApplySure</p>
+            <p class="text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-[#8fa0ba] sm:text-[0.72rem]">
+              Know before you apply
+            </p>
+          </div>
+        </a>
+
+        <nav class="hidden items-center gap-8 lg:flex">
+          <a
+            v-for="link in navLinks"
+            :key="link.href"
+            :href="link.href"
+            class="text-sm font-semibold uppercase tracking-[0.26em] text-[#a6b4c8] transition hover:text-white"
+          >
+            {{ link.label }}
+          </a>
         </nav>
+
+        <a
+          :href="chromeWebStoreUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          @click.prevent="openChromeWebStore"
+          style="color: #07111f"
+          class="hidden rounded-full border border-[#d8bf8a]/40 bg-[#f3eee3] px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white md:inline-flex"
+        >
+          Add to Chrome
+        </a>
       </div>
     </header>
 
-    <main class="relative z-10 pt-28">
-      <!-- Hero Section -->
-      <section class="max-w-7xl mx-auto px-6 py-20 lg:py-32 flex flex-col lg:flex-row items-center justify-between gap-16 min-h-[90vh]">
-        
-        <div class="flex-1 max-w-2xl text-center lg:text-left">
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full text-sm font-semibold text-[#143e80] shadow-sm border border-blue-50 mb-8 animate-[fadeInUp_0.8s_ease-out]">
-            <span class="w-2 h-2 rounded-full bg-[#3399f5] animate-pulse"></span>
-            Know Before You Apply
+    <main class="relative z-10">
+      <section id="top" class="mx-auto max-w-5xl px-6 pb-14 pt-32 text-center lg:pt-40">
+        <div class="flex flex-col items-center motion-safe:animate-[liftIn_800ms_cubic-bezier(0.16,1,0.3,1)_both]">
+          <div class="inline-flex items-center gap-3 rounded-full border border-[#d8bf8a]/25 bg-white/5 px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[#d8bf8a]">
+            <span class="h-2 w-2 rounded-full bg-[#d8bf8a]"></span>
+            Premium decision support for job seekers
           </div>
-          
-          <h1 class="text-5xl lg:text-7xl font-extrabold leading-tight tracking-tight mb-6 animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
-            Stop Guessing.<br/>
-            <span class="bg-gradient-to-r from-[#3399f5] to-[#143e80] bg-clip-text text-transparent">Start Knowing.</span>
+
+          <h1 class="font-display mt-8 max-w-4xl text-5xl leading-[0.92] tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl xl:text-[5.6rem]">
+            The job search should look
+            <span class="text-[#d8bf8a]">deliberate</span>, not desperate.
           </h1>
-          
-          <p class="text-xl text-slate-600 mb-10 leading-relaxed max-w-3xl mx-auto lg:mx-0 animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
-            ApplySure analyzes your resume against any job description on LinkedIn or Naukri in seconds.
-            Get your ATS match score, see exactly what skills you're missing, and generate a tailored
-            job-ready resume — <span class="font-semibold text-slate-900 border-b-2 border-blue-100">all without leaving the page.</span>
+
+          <p class="mt-8 max-w-3xl text-lg leading-8 text-[#c4cfdd] sm:text-xl">
+            ApplySure reads the role in front of you, scores your resume against it, highlights what is missing,
+            and helps you tighten the story before you apply. It feels powerful because it works where the decision happens.
           </p>
-          
-          <div class="flex flex-col items-center lg:items-start gap-4 animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
-            <a :href="chromeWebStoreUrl" target="_blank" rel="noopener noreferrer" @click.prevent="openChromeWebStore" class="px-8 py-4 rounded-full bg-gradient-to-r from-[#3399f5] to-[#143e80] text-white font-bold text-lg flex items-center gap-3 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#3399f5]/30 transition-all border-none group">
-              <img src="/chrome.svg" alt="" aria-hidden="true" class="w-8 h-8 rounded-full object-cover" />
-              Add to Chrome — It's Free
+
+          <div class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
+            <a
+              :href="chromeWebStoreUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              @click.prevent="openChromeWebStore"
+              style="color: #07111f"
+              class="inline-flex items-center justify-center gap-3 rounded-full bg-[#f3eee3] px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white"
+            >
+              <img src="/chrome.svg" alt="" aria-hidden="true" class="h-7 w-7 rounded-full object-cover" />
+              Install the extension
             </a>
-            <p class="text-sm font-medium text-slate-500">Works on LinkedIn & Naukri · No sign-up required · 100% Private</p>
-          </div>
-        </div>
-        
-        <!-- Animated Hero Visual -->
-        <div class="flex-1 flex justify-center w-full lg:w-1/2 mt-12 lg:mt-0 relative animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-          
-          <div class="absolute inset-0 bg-gradient-to-tr from-[#3399f5] to-[#143e80] rounded-[3rem] blur-3xl opacity-30"></div>
-
-          <!-- Main Interactive Mockup Panel -->
-          <div class="relative w-full max-w-lg p-8 bg-white/70 backdrop-blur-2xl border border-white/60 shadow-2xl rounded-[2.5rem] transform hover:-translate-y-2 transition-all duration-500 overflow-hidden">
-            
-            <!-- Window Controls -->
-            <div class="flex gap-2 mb-10">
-              <span class="w-3.5 h-3.5 rounded-full bg-red-400 shadow-sm"></span>
-              <span class="w-3.5 h-3.5 rounded-full bg-yellow-400 shadow-sm"></span>
-              <span class="w-3.5 h-3.5 rounded-full bg-green-400 shadow-sm"></span>
-            </div>
-
-            <!-- Dynamic Body -->
-            <div class="flex flex-col items-center gap-8 pb-4">
-              
-              <!-- Large ATS Score Circle - Now 3 Stage Animated -->
-              <div class="relative w-56 h-56 flex items-center justify-center">
-                
-                <!-- Outer decoration -->
-                <div class="absolute inset-0 rounded-full border border-slate-200 shadow-inner"></div>
-
-                <!-- SVG Score Chart -->
-                <svg viewBox="0 0 36 36" class="absolute w-full h-full transform -rotate-90">
-                  <path class="text-slate-100" stroke-width="2.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                  <!-- Path transitioning dasharray -->
-                  <path :class="strokeColorClass" class="transition-all duration-1000 ease-out" :stroke-dasharray="getDashArray()" stroke-width="2.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                </svg>
-                
-                <div class="flex flex-col items-center justify-center z-10 transition-colors duration-1000">
-                  <span class="text-6xl font-black tracking-tighter transition-all duration-1000" :class="scoreColorClass">{{ currentScore }}%</span>
-                  <span class="text-sm font-bold text-slate-500 uppercase tracking-widest mt-2 transition-all duration-500">{{ scoreLabel }}</span>
-                </div>
-              </div>
-
-              <!-- Animated Data Lines representing analysis processing -->
-              <div class="w-full mt-6 space-y-5 px-4">
-                
-                <!-- 1: Skills -->
-                <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-[#143e80]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  </div>
-                  <div class="flex-1">
-                    <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
-                      <!-- Animates from 20% -> 35% -> 70% -> 100% -->
-                      <div class="h-full bg-[#143e80] transition-all duration-1000 ease-out" 
-                           :style="`width: ${scoreStage === 3 ? '100%' : (scoreStage === 2 ? '70%' : (scoreStage === 1 ? '35%' : '20%'))}`"></div>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- 2: Keywords -->
-                <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-[#3399f5]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                  </div>
-                  <div class="flex-1">
-                    <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
-                      <!-- Animates from 10% -> 25% -> 55% -> 95% -->
-                      <div class="h-full bg-[#3399f5] transition-all duration-1000 ease-out" 
-                           :style="`width: ${scoreStage === 3 ? '95%' : (scoreStage === 2 ? '55%' : (scoreStage === 1 ? '25%' : '10%'))}`"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 3: Missing -->
-                <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                  </div>
-                  <div class="flex-1">
-                    <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
-                       <!-- Reduces from 75% -> 65% -> 35% -> 5% -->
-                      <div class="h-full bg-slate-300 transition-all duration-1000 ease-out" 
-                           :style="`width: ${scoreStage === 3 ? '5%' : (scoreStage === 2 ? '35%' : (scoreStage === 1 ? '65%' : '75%'))}`"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Platforms Section with Tailwind -->
-      <section class="max-w-4xl mx-auto px-6 py-12 mb-12">
-        <p class="text-center text-sm font-bold tracking-widest text-[#143e80] opacity-80 mb-8 uppercase">Seamlessly Integrates With Your Favorite Job Boards</p>
-        <div class="flex justify-center flex-wrap gap-6">
-          <div class="flex items-center gap-3 px-8 py-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-md transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-8 h-8 fill-[#143e80]">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-            </svg>
-            <span class="font-bold text-xl text-slate-800">LinkedIn</span>
-          </div>
-          <div class="flex items-center gap-3 px-8 py-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-md transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-8 h-8 fill-[#3399f5]">
-              <path d="M20 6h-4v-2c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v2h-4c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2v-12c0-1.103-.897-2-2-2zm-10-2h4v2h-4v-2zm10 14h-16v-9h16v9z"/>
-              <path d="M12 18c1.654 0 3-1.346 3-3s-1.346-3-3-3-3 1.346-3 3 1.346 3 3 3zm0-4c.552 0 1 .449 1 1s-.448 1-1 1-1-.449-1-1 .448-1 1-1z"/>
-            </svg>
-            <span class="font-bold text-xl text-slate-800 tracking-tight">Naukri</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- How it Works Section Tailwind -->
-      <section id="how-it-works" class="max-w-7xl mx-auto px-6 py-24">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 text-[#143e80]">How It Works</h2>
-          <p class="text-xl text-slate-500">Three simple steps to the perfect pitch.</p>
-        </div>
-        
-        <div class="flex flex-col md:flex-row justify-between gap-8 relative items-center md:items-stretch">
-          
-          <!-- Step 1 -->
-          <div class="flex-1 max-w-sm bg-white/60 backdrop-blur-lg border border-white p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center flex flex-col items-center z-10 hover:-translate-y-2 hover:shadow-xl transition-all">
-            <div class="relative w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center text-[#3399f5] mb-8 border border-slate-100">
-              <span class="absolute -top-3 -right-2 bg-[#143e80] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold border-4 border-white">1</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-            </div>
-            <h3 class="text-2xl font-bold mb-4 text-[#143e80]">Upload Your Resume</h3>
-            <p class="text-slate-500 leading-relaxed">Upload your PDF once. ApplySure reads and saves it locally on your device. No cloud uploads, absolute privacy.</p>
-          </div>
-          
-          <!-- Step 2 -->
-          <div class="flex-1 max-w-sm bg-white/60 backdrop-blur-lg border border-white p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center flex flex-col items-center z-10 hover:-translate-y-2 hover:shadow-xl transition-all">
-            <div class="relative w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center text-[#3399f5] mb-8 border border-slate-100">
-              <span class="absolute -top-3 -right-2 bg-[#143e80] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold border-4 border-white">2</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
-            </div>
-            <h3 class="text-2xl font-bold mb-4 text-[#143e80]">Open Any Job Page</h3>
-            <p class="text-slate-500 leading-relaxed">Navigate to any job listing on LinkedIn or Naukri. ApplySure automatically preps the description in the background.</p>
-          </div>
-
-          <!-- Step 3 -->
-          <div class="flex-1 max-w-sm bg-white/60 backdrop-blur-lg border border-white p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center flex flex-col items-center z-10 hover:-translate-y-2 hover:shadow-xl transition-all">
-            <div class="relative w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center text-[#3399f5] mb-8 border border-slate-100">
-              <span class="absolute -top-3 -right-2 bg-[#143e80] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold border-4 border-white">3</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-            </div>
-            <h3 class="text-2xl font-bold mb-4 text-[#143e80]">Click "Analyze Match"</h3>
-            <p class="text-slate-500 leading-relaxed">Hit the side panel button. Instantly get your ATS score, missing skills, and a rewritten tailored resume.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Features Section Tailwind -->
-      <section id="features" class="max-w-7xl mx-auto px-6 py-24">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 text-[#143e80]">Everything You Need to Get Hired</h2>
-          <p class="text-xl text-slate-500">Powerful AI tools directly inside your browser.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          
-          <div class="bg-white/60 backdrop-blur-md p-10 rounded-3xl border border-white shadow-sm hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all group">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#3399f5] to-[#143e80] opacity-90 flex items-center justify-center text-white mb-6 transform group-hover:rotate-6 transition-transform">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-            </div>
-            <h3 class="text-2xl font-bold mb-3 text-[#143e80]">ATS Match Score</h3>
-            <p class="text-slate-500 leading-relaxed">Precise percentage score showing how well your resume matches. Our AI uses strict domain-matching rules for accuracy.</p>
-          </div>
-
-          <div class="bg-white/60 backdrop-blur-md p-10 rounded-3xl border border-white shadow-sm hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all group">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#3399f5] to-[#143e80] opacity-90 flex items-center justify-center text-white mb-6 transform group-hover:rotate-6 transition-transform">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" /></svg>
-            </div>
-            <h3 class="text-2xl font-bold mb-3 text-[#143e80]">Skill Gap Analysis</h3>
-            <p class="text-slate-500 leading-relaxed">See exactly which skills the job requires that you are missing. Stop wondering why you're not getting callbacks.</p>
-          </div>
-
-          <div class="bg-white/60 backdrop-blur-md p-10 rounded-3xl border border-white shadow-sm hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all group">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#3399f5] to-[#143e80] opacity-90 flex items-center justify-center text-white mb-6 transform group-hover:rotate-6 transition-transform">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-            </div>
-            <h3 class="text-2xl font-bold mb-3 text-[#143e80]">Job-Ready Resume</h3>
-            <p class="text-slate-500 leading-relaxed">ApplySure rewrites your resume to align with the specific job — highlighting the right keywords and experience perfectly.</p>
-          </div>
-
-          <div class="bg-white/60 backdrop-blur-md p-10 rounded-3xl border border-white shadow-sm hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all group">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#3399f5] to-[#143e80] opacity-90 flex items-center justify-center text-white mb-6 transform group-hover:rotate-6 transition-transform">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-            </div>
-            <h3 class="text-2xl font-bold mb-3 text-[#143e80]">Easy Apply Detection</h3>
-            <p class="text-slate-500 leading-relaxed">Instantly detects Easy Apply jobs on LinkedIn so you can filter and prioritize your applications effectively.</p>
-          </div>
-
-          <div class="bg-white/60 backdrop-blur-md p-10 rounded-3xl border border-white shadow-sm hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all group">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#3399f5] to-[#143e80] opacity-90 flex items-center justify-center text-white mb-6 transform group-hover:rotate-6 transition-transform">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
-            </div>
-            <h3 class="text-2xl font-bold mb-3 text-[#143e80]">Works in Your Sidebar</h3>
-            <p class="text-slate-500 leading-relaxed">No tedious tab switching. The extension lives straight in Chrome's side panel. Analyze jobs while viewing them.</p>
-          </div>
-
-          <div class="bg-white/60 backdrop-blur-md p-10 rounded-3xl border border-white shadow-sm hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all group">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#3399f5] to-[#143e80] opacity-90 flex items-center justify-center text-white mb-6 transform group-hover:rotate-6 transition-transform">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-            </div>
-            <h3 class="text-2xl font-bold mb-3 text-[#143e80]">100% Private</h3>
-            <p class="text-slate-500 leading-relaxed">Your resume text is stored locally. It's never saved on a server. Job descriptions are discarded immediately after.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Demo Video Section -->
-      <section class="max-w-5xl mx-auto px-6 py-24">
-        <div class="text-center mb-12">
-          <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 text-[#143e80]">Watch ApplySure in Action</h2>
-          <p class="text-xl text-slate-500">Quick walkthrough before you install.</p>
-        </div>
-        <div class="rounded-3xl overflow-hidden border border-slate-200 shadow-xl bg-black">
-          <iframe
-            class="w-full"
-            style="aspect-ratio: 16 / 9;"
-            src="https://www.youtube.com/embed/oU7qxLPs-a8"
-            title="ApplySure Demo Video"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-          ></iframe>
-        </div>
-      </section>
-
-      <!-- FAQ Section Tailwind -->
-      <section id="faq" class="max-w-4xl mx-auto px-6 py-24">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl font-extrabold tracking-tight text-[#143e80]">Frequently Asked Questions</h2>
-        </div>
-        <div class="flex flex-col gap-4">
-          <div v-for="(faq, index) in faqs" :key="index" 
-               class="bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all duration-300"
-               :class="{ 'border-[#3399f5] shadow-md': isFAQOpen[index] }">
-            <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none" @click="toggleFAQ(index)">
-              <span class="text-lg font-semibold text-[#143e80]">{{ faq.question }}</span>
-              <div class="text-[#3399f5] transform transition-transform duration-300" :class="{ 'rotate-180': isFAQOpen[index] }">
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </div>
-            </button>
-            <div class="px-6 transition-all duration-300 max-h-0 overflow-hidden"
-                 :class="{ 'max-h-96 pb-6': isFAQOpen[index] }">
-              <p class="text-slate-500 leading-relaxed">{{ faq.answer }}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <!-- Big CTA Banner Tailwind -->
-      <section class="max-w-5xl mx-auto px-6 py-24">
-        <div class="bg-gradient-to-r from-[#3399f5] to-[#143e80] rounded-[3rem] p-16 text-center text-white relative overflow-hidden shadow-2xl">
-          <div class="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
-            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">Start your smarter job search today.</h2>
-            <p class="text-xl text-blue-100 mb-10">Get instant insights and a tailored resume for every application.</p>
-            <a :href="chromeWebStoreUrl" target="_blank" rel="noopener noreferrer" @click.prevent="openChromeWebStore" class="px-8 py-4 bg-white text-[#143e80] rounded-full font-bold text-xl flex items-center gap-3 hover:scale-105 hover:bg-slate-50 transition-all shadow-xl">
-              Get ApplySure for Free
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
+            <a
+              href="#demo"
+              class="inline-flex items-center justify-center rounded-full border border-white/14 px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-white transition hover:border-white/30 hover:bg-white/5"
+            >
+              Watch the demo
             </a>
+          </div>
+
+          <p class="mt-4 text-sm uppercase tracking-[0.25em] text-[#8fa0ba]">
+            Free to use. No sign-up. Resume stays on your device.
+          </p>
+
+          <div class="mt-12 grid w-full gap-4 sm:grid-cols-3">
+            <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-sm">
+              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">Move faster</p>
+              <p class="mt-3 font-display text-2xl text-white">Know the fit first.</p>
+            </div>
+            <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-sm">
+              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">Avoid guesswork</p>
+              <p class="mt-3 font-display text-2xl text-white">See the missing signals.</p>
+            </div>
+            <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-sm">
+              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">Apply cleaner</p>
+              <p class="mt-3 font-display text-2xl text-white">Rewrite for the role.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-6 pb-24">
+        <div class="relative motion-safe:animate-[liftIn_1000ms_cubic-bezier(0.16,1,0.3,1)_120ms_both]">
+          <div class="absolute -left-6 top-12 h-40 w-40 rounded-full border border-white/10"></div>
+          <div class="absolute -right-12 bottom-16 h-52 w-52 rounded-full border border-[#d8bf8a]/20"></div>
+
+          <div class="hero-frame relative w-full overflow-hidden rounded-[34px] border border-white/10 bg-[#0d1728]/90 p-4 shadow-[0_40px_120px_rgba(0,0,0,0.45)] sm:p-5 lg:p-6">
+            <div class="scan-line absolute left-8 right-8 top-24 h-px bg-gradient-to-r from-transparent via-[#7fb1ff] to-transparent opacity-60"></div>
+            <div class="flex items-center justify-between rounded-[24px] border border-white/8 bg-white/5 px-5 py-3">
+              <div class="flex items-center gap-2">
+                <span class="h-3 w-3 rounded-full bg-[#ff7b72]"></span>
+                <span class="h-3 w-3 rounded-full bg-[#f1bf58]"></span>
+                <span class="h-3 w-3 rounded-full bg-[#5fd48b]"></span>
+              </div>
+              <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Live extension preview</p>
+              <span class="rounded-full border border-[#d8bf8a]/30 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.28em] text-[#d8bf8a]">
+                Chrome side panel
+              </span>
+            </div>
+
+            <div class="mt-4 grid gap-4 lg:grid-cols-[1.03fr_0.97fr]">
+              <article class="rounded-[28px] bg-[#efe6d6] p-6 text-[#17233a]">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Job brief</p>
+                    <h2 class="font-display mt-3 text-3xl leading-tight">Senior Product Designer</h2>
+                    <p class="mt-2 text-sm font-medium text-[#5a6473]">B2B platform · Growth and experimentation</p>
+                  </div>
+                  <span class="rounded-full bg-[#17233a] px-3 py-1 text-[0.64rem] font-bold uppercase tracking-[0.26em] text-white">
+                    LinkedIn
+                  </span>
+                </div>
+
+                <div class="mt-8 space-y-5">
+                  <div>
+                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[#7a6f5a]">Need to demonstrate</p>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                      <span class="rounded-full border border-[#d3c3a7] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#17233a]">System thinking</span>
+                      <span class="rounded-full border border-[#d3c3a7] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#17233a]">Metrics ownership</span>
+                      <span class="rounded-full border border-[#d3c3a7] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#17233a]">Cross-functional leadership</span>
+                    </div>
+                  </div>
+
+                  <div class="space-y-3">
+                    <div class="h-2 rounded-full bg-[#d9d0c0]"></div>
+                    <div class="h-2 w-[88%] rounded-full bg-[#d9d0c0]"></div>
+                    <div class="h-2 w-[80%] rounded-full bg-[#d9d0c0]"></div>
+                    <div class="h-2 w-[67%] rounded-full bg-[#d9d0c0]"></div>
+                  </div>
+
+                  <div class="rounded-[22px] border border-[#d3c3a7] bg-white/50 p-5">
+                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Hiring signal</p>
+                    <p class="mt-3 text-base leading-7 text-[#253247]">
+                      The role values clarity, execution, and measurable product impact. Your resume needs that story sooner.
+                    </p>
+                  </div>
+                </div>
+              </article>
+
+              <article class="relative overflow-hidden rounded-[28px] border border-[#21314b] bg-[#091423] p-6">
+                <div class="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#d8bf8a] to-transparent opacity-50"></div>
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">ApplySure analysis</p>
+                    <h2 class="font-display mt-3 text-3xl leading-tight text-white">Ready to submit?</h2>
+                  </div>
+                  <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.28em] text-[#d8bf8a]">
+                    Live
+                  </span>
+                </div>
+
+                <div class="mt-8 flex flex-col gap-6 sm:flex-row sm:items-center">
+                  <div class="relative flex h-40 w-40 shrink-0 items-center justify-center self-center">
+                    <svg viewBox="0 0 36 36" class="absolute h-full w-full -rotate-90">
+                      <path
+                        class="text-[#1f2c40]"
+                        stroke-width="2.2"
+                        stroke="currentColor"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                      <path
+                        :class="strokeColorClass"
+                        class="transition-all duration-1000 ease-out"
+                        :stroke-dasharray="getDashArray"
+                        stroke-width="2.4"
+                        stroke-linecap="round"
+                        stroke="currentColor"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                    </svg>
+                    <div class="relative z-10 flex flex-col items-center text-center">
+                      <span
+                        class="w-[6ch] text-center text-5xl font-black tracking-[-0.08em] transition-colors duration-1000 [font-variant-numeric:tabular-nums]"
+                        :class="scoreColorClass"
+                      >
+                        {{ currentScore }}%
+                      </span>
+                      <span class="mt-2 flex min-h-[2.5rem] max-w-[9rem] items-center justify-center text-center text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">
+                        {{ scoreLabel }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="flex-1 rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Interpretation</p>
+                    <p class="mt-3 text-base leading-7 text-[#d2dae6]">
+                      High-fit role. Tighten the leadership narrative and bring measurable outcomes forward before you apply.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="mt-8 space-y-4">
+                  <div v-for="row in analysisRows" :key="row.label">
+                    <div class="mb-2 flex items-center justify-between text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">
+                      <span>{{ row.label }}</span>
+                      <span class="[font-variant-numeric:tabular-nums]">{{ row.value }}%</span>
+                    </div>
+                    <div class="h-2 rounded-full bg-white/8">
+                      <div
+                        :class="row.tone"
+                        class="h-full rounded-full transition-all duration-1000 ease-out"
+                        :style="{ width: `${row.value}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-8 grid items-stretch gap-4 sm:grid-cols-2">
+                  <div class="rounded-[22px] border border-white/8 bg-white/[0.03] p-4 sm:min-h-[10.5rem]">
+                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Missing signals</p>
+                    <div class="mt-3 flex min-h-[4.75rem] flex-wrap content-start gap-2">
+                      <span
+                        v-for="chip in missingSignalChips"
+                        :key="chip"
+                        class="rounded-full border border-[#31435f] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#e5e0d3]"
+                      >
+                        {{ chip }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="rounded-[22px] border border-white/8 bg-white/[0.03] p-4 sm:min-h-[10.5rem]">
+                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Resume rewrite focus</p>
+                    <ul class="mt-3 min-h-[7.75rem] space-y-2 text-sm leading-6 text-[#d2dae6]">
+                      <li v-for="bullet in rewriteFocus" :key="bullet" class="flex gap-3">
+                        <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d8bf8a]"></span>
+                        <span>{{ bullet }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="floating-note absolute -bottom-8 left-4 max-w-xs rounded-[26px] border border-white/10 bg-[#f4eee1] p-5 text-[#17233a] shadow-[0_30px_80px_rgba(0,0,0,0.28)] sm:left-8">
+            <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Private by design</p>
+            <p class="mt-3 text-base leading-7">
+              Resume storage stays inside Chrome on your own machine. The product feels premium because it respects trust.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-6 pb-24">
+        <div class="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
+          <div class="grid gap-px bg-white/10 md:grid-cols-2 xl:grid-cols-4">
+            <article v-for="point in proofPoints" :key="point.label" class="bg-[#0e1828] p-6 lg:p-7">
+              <p class="text-[0.7rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">{{ point.label }}</p>
+              <h2 class="font-display mt-4 text-3xl leading-tight text-white">{{ point.value }}</h2>
+              <p class="mt-4 text-sm leading-7 text-[#c4cfdd]">{{ point.description }}</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="mx-auto max-w-7xl px-6 py-24">
+        <div class="grid gap-12 lg:grid-cols-[0.76fr_1.24fr] lg:items-start">
+          <div class="lg:pr-10">
+            <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Why it converts</p>
+            <h2 class="font-display mt-6 text-4xl leading-tight tracking-[-0.03em] text-white sm:text-5xl lg:text-6xl">
+              This needs to feel like a sharp instrument, not a generic AI landing page.
+            </h2>
+            <p class="mt-6 text-lg leading-8 text-[#c4cfdd]">
+              The product promise is simple: help people make better application decisions faster. The page now speaks in that tone and shows the workflow with enough confidence that install becomes the obvious next step.
+            </p>
+
+            <div class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.04] p-6">
+              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Built for decisive applicants</p>
+              <ul class="mt-5 space-y-4 text-sm leading-7 text-[#d2dae6]">
+                <li v-for="principle in operatingPrinciples" :key="principle" class="flex gap-3">
+                  <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d8bf8a]"></span>
+                  <span>{{ principle }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <article
+              v-for="card in featureCards"
+              :key="card.title"
+              class="rounded-[30px] border border-white/10 bg-white/[0.04] p-7 shadow-[0_20px_60px_rgba(0,0,0,0.18)] transition hover:-translate-y-1 hover:bg-white/[0.06]"
+              :class="card.featured ? 'md:col-span-2 md:grid md:grid-cols-[0.72fr_1.28fr] md:items-start md:gap-8' : ''"
+            >
+              <div>
+                <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">{{ card.eyebrow }}</p>
+                <h3 class="font-display mt-5 text-3xl leading-tight tracking-[-0.03em] text-white sm:text-[2rem]">
+                  {{ card.title }}
+                </h3>
+              </div>
+              <p class="mt-5 text-sm leading-7 text-[#c4cfdd] md:mt-0 md:self-end">
+                {{ card.body }}
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="mx-auto max-w-7xl px-6 py-24">
+        <div class="overflow-hidden rounded-[36px] border border-white/10 bg-[#0c1626] shadow-[0_28px_90px_rgba(0,0,0,0.26)]">
+          <div class="grid gap-10 p-6 lg:grid-cols-[0.72fr_1.28fr] lg:p-10 xl:p-12">
+            <div class="lg:pr-10">
+              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">How it works</p>
+              <h2 class="font-display mt-6 text-4xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
+                Three moves. No clutter.
+              </h2>
+              <p class="mt-6 text-lg leading-8 text-[#c4cfdd]">
+                The best product pages make the workflow obvious. ApplySure only needs three steps, and each one removes friction from the job search instead of adding more.
+              </p>
+            </div>
+
+            <div class="space-y-4">
+              <article
+                v-for="step in steps"
+                :key="step.index"
+                class="rounded-[28px] border border-white/10 bg-white/[0.04] p-6 transition hover:border-white/20"
+              >
+                <div class="grid gap-5 md:grid-cols-[96px_1fr] md:items-start">
+                  <div>
+                    <p class="font-display text-5xl leading-none text-[#d8bf8a]">{{ step.index }}</p>
+                    <p class="mt-4 inline-flex rounded-full border border-white/10 px-3 py-1 text-[0.64rem] font-bold uppercase tracking-[0.26em] text-[#8fa0ba]">
+                      {{ step.detail }}
+                    </p>
+                  </div>
+                  <div>
+                    <h3 class="font-display text-3xl leading-tight text-white">{{ step.title }}</h3>
+                    <p class="mt-4 text-sm leading-7 text-[#c4cfdd]">{{ step.body }}</p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="demo" class="mx-auto max-w-7xl px-6 py-24">
+        <div class="overflow-hidden rounded-[36px] border border-white/10 bg-[#0a1423] shadow-[0_28px_90px_rgba(0,0,0,0.24)]">
+          <div class="p-6 lg:p-10 xl:p-12">
+            <div class="mx-auto max-w-3xl text-center">
+              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Demo</p>
+              <h2 class="font-display mt-6 text-4xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
+                Show the motion, then ask for the install.
+              </h2>
+              <p class="mt-6 text-lg leading-8 text-[#c4cfdd]">
+                Seeing the extension inside the workflow lowers resistance. The visitor should already understand the value before the Chrome button appears again.
+              </p>
+            </div>
+
+            <div class="mx-auto mt-12 w-full max-w-5xl rounded-[30px] border border-white/10 bg-black p-2 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
+              <div class="overflow-hidden rounded-[24px] border border-white/5">
+                <iframe
+                  class="w-full"
+                  style="aspect-ratio: 16 / 9"
+                  src="https://www.youtube.com/embed/oU7qxLPs-a8"
+                  title="ApplySure Demo Video"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="relative mt-10 bg-[#f3eee3] text-[#17233a]">
+        <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#07111f] to-transparent opacity-20"></div>
+        <div class="mx-auto max-w-7xl px-6 py-24">
+          <div class="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+            <div class="lg:pr-10">
+              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">FAQ</p>
+              <h2 class="font-display mt-6 text-4xl leading-tight tracking-[-0.03em] text-[#17233a] sm:text-5xl">
+                Remove the last objections.
+              </h2>
+              <p class="mt-6 text-lg leading-8 text-[#425268]">
+                The questions that matter most here are cost, privacy, workflow, and where the extension works. Those are answered directly.
+              </p>
+
+              <div class="light-card mt-10 rounded-[30px] border border-[#d7c9af] bg-white/70 p-6">
+                <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Final conversion push</p>
+                <p class="mt-4 text-base leading-7 text-[#253247]">
+                  By the time someone reaches this section, the install CTA should feel low-risk and obvious. The design now supports that instead of diluting it.
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <article
+                v-for="(faq, index) in faqs"
+                :key="faq.question"
+                class="light-card overflow-hidden rounded-[28px] border border-[#d7c9af] bg-white/80 transition"
+                :class="isFAQOpen[index] ? 'border-[#bca371] shadow-[0_20px_60px_rgba(16,24,40,0.08)]' : ''"
+              >
+                <button
+                  class="flex w-full items-center justify-between gap-4 p-6 text-left"
+                  @click="toggleFAQ(index)"
+                >
+                  <span class="font-display text-2xl leading-tight text-[#17233a]">{{ faq.question }}</span>
+                  <span
+                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#d7c9af] text-[#17233a] transition"
+                    :class="isFAQOpen[index] ? 'rotate-180 bg-[#17233a] text-white' : 'bg-white'"
+                  >
+                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+                    </svg>
+                  </span>
+                </button>
+                <div class="overflow-hidden px-6 transition-all duration-300" :class="isFAQOpen[index] ? 'max-h-64 pb-6' : 'max-h-0'">
+                  <p class="max-w-3xl text-base leading-7 text-[#425268]">{{ faq.answer }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="mt-20 overflow-hidden rounded-[38px] bg-[#0d1728] text-[#f4f0e8] shadow-[0_32px_100px_rgba(0,0,0,0.26)]">
+            <div class="grid gap-10 px-6 py-10 lg:grid-cols-[1fr_auto] lg:items-center lg:px-10 lg:py-12">
+              <div>
+                <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Install ApplySure</p>
+                <h2 class="font-display mt-5 text-4xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
+                  If the page feels confident, the product should be one click away.
+                </h2>
+                <p class="mt-5 max-w-3xl text-lg leading-8 text-[#c4cfdd]">
+                  Make the decision once. Add the extension, open a job page, and stop applying blind.
+                </p>
+              </div>
+
+              <a
+                :href="chromeWebStoreUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                @click.prevent="openChromeWebStore"
+                style="color: #07111f"
+                class="inline-flex items-center justify-center rounded-full bg-[#f3eee3] px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white"
+              >
+                Get it on Chrome
+              </a>
+            </div>
           </div>
         </div>
       </section>
     </main>
 
-    <!-- Footer Tailwind -->
-    <footer class="bg-slate-900 border-t border-slate-800 pt-20 pb-10">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="flex flex-col md:flex-row justify-between gap-12 mb-16">
-          
-          <div class="max-w-xs">
-            <div class="flex items-center gap-3 mb-4">
-               <img src="/logo.png" alt="ApplySure Logo" class="h-16 w-auto" />
-               <span class="text-2xl font-extrabold text-white">ApplySure</span>
+    <footer class="relative z-10 border-t border-white/10 bg-[#091220]">
+      <div class="mx-auto max-w-7xl px-6 py-12">
+        <div class="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div class="flex items-center gap-4">
+              <img src="/logo.png" alt="ApplySure Logo" class="h-12 w-auto object-contain" />
+              <div>
+                <p class="font-display text-2xl text-white">ApplySure</p>
+                <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Know before you apply</p>
+              </div>
             </div>
-            <p class="text-slate-400">Know Before You Apply.</p>
+            <p class="mt-4 max-w-md text-sm leading-7 text-[#9ca9bb]">
+              Evaluate the role, see the fit, and tailor the resume without leaving the job page.
+            </p>
           </div>
 
-          <div class="flex gap-16 flex-wrap">
-            <div class="flex flex-col gap-4">
-              <h4 class="text-white font-semibold text-lg">Product</h4>
-              <a href="#how-it-works" class="text-slate-400 hover:text-white transition-colors">How it Works</a>
-              <a href="#features" class="text-slate-400 hover:text-white transition-colors">Features</a>
-              <a :href="chromeWebStoreUrl" class="text-slate-400 hover:text-white transition-colors">Chrome Web Store</a>
+          <div class="flex flex-wrap gap-10 text-sm text-[#9ca9bb]">
+            <div class="space-y-3">
+              <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Explore</p>
+              <a href="#features" class="block transition hover:text-white">Why ApplySure</a>
+              <a href="#how-it-works" class="block transition hover:text-white">How it works</a>
+              <a href="#demo" class="block transition hover:text-white">Demo</a>
             </div>
-            <div class="flex flex-col gap-4">
-              <h4 class="text-white font-semibold text-lg">Legal</h4>
-              <RouterLink to="/privacy" class="text-slate-400 hover:text-white transition-colors">Privacy Policy</RouterLink>
+            <div class="space-y-3">
+              <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Legal</p>
+              <RouterLink to="/privacy" class="block transition hover:text-white">Privacy Policy</RouterLink>
+              <a
+                :href="chromeWebStoreUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                @click.prevent="openChromeWebStore"
+                class="block transition hover:text-white"
+              >
+                Chrome Web Store
+              </a>
             </div>
           </div>
         </div>
-        
-        <div class="border-t border-slate-800 pt-8 text-center text-slate-500">
-          <p>&copy; {{ currentYear }} ApplySure. All rights reserved.</p>
+
+        <div class="mt-10 border-t border-white/10 pt-6 text-sm text-[#6f7d92]">
+          &copy; {{ currentYear }} ApplySure. All rights reserved.
         </div>
       </div>
     </footer>
   </div>
 </template>
 
-<style>
-/* Safe custom animations to use with Tailwind arbitrary values if needed */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+<style scoped>
+.font-display {
+  font-family: var(--font-display);
 }
-@keyframes float {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(5%, 10%) scale(1.1); }
+
+.page-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+.hero-frame {
+  backdrop-filter: blur(18px);
+}
+
+.floating-note,
+.light-card {
+  backdrop-filter: blur(12px);
+}
+
+.scan-line {
+  animation: scan 3.8s linear infinite;
+}
+
+@keyframes liftIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(28px, 18px, 0) scale(1.08);
+  }
+}
+
+@keyframes scan {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: translateY(260px);
+    opacity: 0.45;
+  }
+
+  100% {
+    transform: translateY(520px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-line {
+    animation: none;
+  }
 }
 </style>
