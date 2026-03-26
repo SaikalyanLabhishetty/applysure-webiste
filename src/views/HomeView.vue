@@ -262,12 +262,12 @@ onUnmounted(() => {
     </div>
 
     <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#07111f]/78 backdrop-blur-xl">
-      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a href="#top" class="flex items-center gap-4">
-          <img src="/logo.png" alt="ApplySure Logo" class="h-12 w-auto object-contain sm:h-14" />
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
+        <a href="#top" class="flex items-center gap-3 sm:gap-4">
+          <img src="/logo.png" alt="ApplySure Logo" class="h-10 w-auto object-contain sm:h-14" />
           <div>
-            <p class="font-display text-2xl tracking-tight text-white sm:text-3xl">ApplySure</p>
-            <p class="text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-[#8fa0ba] sm:text-[0.72rem]">
+            <p class="font-display text-xl tracking-tight text-white sm:text-3xl">ApplySure</p>
+            <p class="hidden text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-[#8fa0ba] sm:block sm:text-[0.72rem]">
               Know before you apply
             </p>
           </div>
@@ -298,19 +298,19 @@ onUnmounted(() => {
     </header>
 
     <main class="relative z-10">
-      <section id="top" class="mx-auto max-w-5xl px-6 pb-14 pt-32 text-center lg:pt-40">
+      <section id="top" class="mx-auto max-w-5xl px-4 pb-14 pt-28 text-center sm:px-6 sm:pt-32 lg:pt-40">
         <div class="flex flex-col items-center motion-safe:animate-[liftIn_800ms_cubic-bezier(0.16,1,0.3,1)_both]">
-          <div class="inline-flex items-center gap-3 rounded-full border border-[#d8bf8a]/25 bg-white/5 px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[#d8bf8a]">
+          <div class="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-[#d8bf8a]/25 bg-white/5 px-3 py-2 text-center text-[0.64rem] font-semibold uppercase tracking-[0.22em] text-[#d8bf8a] sm:gap-3 sm:px-4 sm:text-[0.72rem] sm:tracking-[0.3em]">
             <span class="h-2 w-2 rounded-full bg-[#d8bf8a]"></span>
             Premium decision support for job seekers
           </div>
 
-          <h1 class="font-display mt-8 max-w-4xl text-5xl leading-[0.92] tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl xl:text-[5.6rem]">
+          <h1 class="font-display mt-8 max-w-4xl text-[1.9rem] leading-[1.02] tracking-[-0.04em] text-white sm:text-6xl sm:leading-[0.92] lg:text-7xl xl:text-[5.6rem]">
             The job search should look
             <span class="text-[#d8bf8a]">deliberate</span>, not desperate.
           </h1>
 
-          <p class="mt-8 max-w-3xl text-lg leading-8 text-[#c4cfdd] sm:text-xl">
+          <p class="mt-8 max-w-3xl text-sm leading-6 text-[#c4cfdd] sm:text-xl sm:leading-8">
             ApplySure reads the role in front of you, scores your resume against it, highlights what is missing,
             and helps you tighten the story before you apply. It feels powerful because it works where the decision happens.
           </p>
@@ -322,65 +322,64 @@ onUnmounted(() => {
               rel="noopener noreferrer"
               @click.prevent="openChromeWebStore"
               style="color: #07111f"
-              class="inline-flex items-center justify-center gap-3 rounded-full bg-[#f3eee3] px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white"
+              class="inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#f3eee3] px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white sm:w-auto"
             >
               <img src="/chrome.svg" alt="" aria-hidden="true" class="h-7 w-7 rounded-full object-cover" />
               Install the extension
             </a>
             <a
               href="#demo"
-              class="inline-flex items-center justify-center rounded-full border border-white/14 px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-white transition hover:border-white/30 hover:bg-white/5"
+              class="inline-flex w-full items-center justify-center rounded-full border border-white/14 px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-white transition hover:border-white/30 hover:bg-white/5 sm:w-auto"
             >
               Watch the demo
             </a>
           </div>
 
-          <p class="mt-4 text-sm uppercase tracking-[0.25em] text-[#8fa0ba]">
+          <p class="mt-4 text-xs uppercase tracking-[0.18em] text-[#8fa0ba] sm:text-sm sm:tracking-[0.25em]">
             Free to use. No sign-up. Resume stays on your device.
           </p>
 
           <div class="mt-12 grid w-full gap-4 sm:grid-cols-3">
             <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-sm">
               <p class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">Move faster</p>
-              <p class="mt-3 font-display text-2xl text-white">Know the fit first.</p>
+              <p class="mt-3 font-display text-xl text-white sm:text-2xl">Know the fit first.</p>
             </div>
             <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-sm">
               <p class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">Avoid guesswork</p>
-              <p class="mt-3 font-display text-2xl text-white">See the missing signals.</p>
+              <p class="mt-3 font-display text-xl text-white sm:text-2xl">See the missing signals.</p>
             </div>
             <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-sm">
               <p class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">Apply cleaner</p>
-              <p class="mt-3 font-display text-2xl text-white">Rewrite for the role.</p>
+              <p class="mt-3 font-display text-xl text-white sm:text-2xl">Rewrite for the role.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="mx-auto max-w-7xl px-6 pb-24">
+      <section class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-24">
         <div class="relative motion-safe:animate-[liftIn_1000ms_cubic-bezier(0.16,1,0.3,1)_120ms_both]">
-          <div class="absolute -left-6 top-12 h-40 w-40 rounded-full border border-white/10"></div>
-          <div class="absolute -right-12 bottom-16 h-52 w-52 rounded-full border border-[#d8bf8a]/20"></div>
+          <div class="absolute -left-6 top-12 hidden h-40 w-40 rounded-full border border-white/10 sm:block"></div>
+          <div class="absolute -right-12 bottom-16 hidden h-52 w-52 rounded-full border border-[#d8bf8a]/20 sm:block"></div>
 
           <div class="hero-frame relative w-full overflow-hidden rounded-[34px] border border-white/10 bg-[#0d1728]/90 p-4 shadow-[0_40px_120px_rgba(0,0,0,0.45)] sm:p-5 lg:p-6">
-            <div class="scan-line absolute left-8 right-8 top-24 h-px bg-gradient-to-r from-transparent via-[#7fb1ff] to-transparent opacity-60"></div>
-            <div class="flex items-center justify-between rounded-[24px] border border-white/8 bg-white/5 px-5 py-3">
+            <div class="scan-line absolute left-8 right-8 top-24 hidden h-px bg-gradient-to-r from-transparent via-[#7fb1ff] to-transparent opacity-60 sm:block"></div>
+            <div class="flex items-center justify-between gap-3 rounded-[24px] border border-white/8 bg-white/5 px-3 py-3 sm:px-5">
               <div class="flex items-center gap-2">
                 <span class="h-3 w-3 rounded-full bg-[#ff7b72]"></span>
                 <span class="h-3 w-3 rounded-full bg-[#f1bf58]"></span>
                 <span class="h-3 w-3 rounded-full bg-[#5fd48b]"></span>
               </div>
-              <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Live extension preview</p>
-              <span class="rounded-full border border-[#d8bf8a]/30 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.28em] text-[#d8bf8a]">
+              <span class="rounded-full border border-[#d8bf8a]/30 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.2em] text-[#d8bf8a] sm:tracking-[0.28em]">
                 Chrome side panel
               </span>
             </div>
 
             <div class="mt-4 grid gap-4 lg:grid-cols-[1.03fr_0.97fr]">
-              <article class="rounded-[28px] bg-[#efe6d6] p-6 text-[#17233a]">
-                <div class="flex items-start justify-between gap-4">
+              <article class="rounded-[28px] bg-[#efe6d6] p-4 text-[#17233a] sm:p-6">
+                <div class="flex flex-col items-start justify-between gap-3 sm:flex-row sm:gap-4">
                   <div>
                     <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Job brief</p>
-                    <h2 class="font-display mt-3 text-3xl leading-tight">Senior Product Designer</h2>
+                    <h2 class="font-display mt-3 text-xl leading-tight sm:text-3xl">Senior Product Designer</h2>
                     <p class="mt-2 text-sm font-medium text-[#5a6473]">B2B platform · Growth and experimentation</p>
                   </div>
                   <span class="rounded-full bg-[#17233a] px-3 py-1 text-[0.64rem] font-bold uppercase tracking-[0.26em] text-white">
@@ -407,19 +406,19 @@ onUnmounted(() => {
 
                   <div class="rounded-[22px] border border-[#d3c3a7] bg-white/50 p-5">
                     <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Hiring signal</p>
-                    <p class="mt-3 text-base leading-7 text-[#253247]">
+                    <p class="mt-3 text-sm leading-6 text-[#253247] sm:text-base sm:leading-7">
                       The role values clarity, execution, and measurable product impact. Your resume needs that story sooner.
                     </p>
                   </div>
                 </div>
               </article>
 
-              <article class="relative overflow-hidden rounded-[28px] border border-[#21314b] bg-[#091423] p-6">
+              <article class="relative overflow-hidden rounded-[28px] border border-[#21314b] bg-[#091423] p-4 sm:p-6">
                 <div class="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#d8bf8a] to-transparent opacity-50"></div>
                 <div class="flex items-start justify-between gap-4">
                   <div>
                     <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">ApplySure analysis</p>
-                    <h2 class="font-display mt-3 text-3xl leading-tight text-white">Ready to submit?</h2>
+                    <h2 class="font-display mt-3 text-xl leading-tight text-white sm:text-3xl">Ready to submit?</h2>
                   </div>
                   <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.28em] text-[#d8bf8a]">
                     Live
@@ -427,7 +426,7 @@ onUnmounted(() => {
                 </div>
 
                 <div class="mt-8 flex flex-col gap-6 sm:flex-row sm:items-center">
-                  <div class="relative flex h-40 w-40 shrink-0 items-center justify-center self-center">
+                  <div class="relative flex h-32 w-32 shrink-0 items-center justify-center self-center sm:h-40 sm:w-40">
                     <svg viewBox="0 0 36 36" class="absolute h-full w-full -rotate-90">
                       <path
                         class="text-[#1f2c40]"
@@ -449,12 +448,12 @@ onUnmounted(() => {
                     </svg>
                     <div class="relative z-10 flex flex-col items-center text-center">
                       <span
-                        class="w-[6ch] text-center text-5xl font-black tracking-[-0.08em] transition-colors duration-1000 [font-variant-numeric:tabular-nums]"
+                        class="w-[6ch] text-center text-3xl font-black tracking-[-0.08em] transition-colors duration-1000 [font-variant-numeric:tabular-nums] sm:text-5xl"
                         :class="scoreColorClass"
                       >
                         {{ currentScore }}%
                       </span>
-                      <span class="mt-2 flex min-h-[2.5rem] max-w-[9rem] items-center justify-center text-center text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">
+                      <span class="mt-2 flex min-h-[2.5rem] max-w-[9rem] items-center justify-center text-center text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-[#8fa0ba] sm:text-[0.68rem] sm:tracking-[0.34em]">
                         {{ scoreLabel }}
                       </span>
                     </div>
@@ -462,7 +461,7 @@ onUnmounted(() => {
 
                   <div class="flex-1 rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
                     <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Interpretation</p>
-                    <p class="mt-3 text-base leading-7 text-[#d2dae6]">
+                    <p class="mt-3 text-sm leading-6 text-[#d2dae6] sm:text-base sm:leading-7">
                       High-fit role. Tighten the leadership narrative and bring measurable outcomes forward before you apply.
                     </p>
                   </div>
@@ -486,7 +485,7 @@ onUnmounted(() => {
 
                 <div class="mt-8 grid items-stretch gap-4 sm:grid-cols-2">
                   <div class="rounded-[22px] border border-white/8 bg-white/[0.03] p-4 sm:min-h-[10.5rem]">
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Missing signals</p>
+                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#8fa0ba] sm:tracking-[0.34em]">Missing signals</p>
                     <div class="mt-3 flex min-h-[4.75rem] flex-wrap content-start gap-2">
                       <span
                         v-for="chip in missingSignalChips"
@@ -499,7 +498,7 @@ onUnmounted(() => {
                   </div>
 
                   <div class="rounded-[22px] border border-white/8 bg-white/[0.03] p-4 sm:min-h-[10.5rem]">
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Resume rewrite focus</p>
+                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#8fa0ba] sm:tracking-[0.34em]">Resume rewrite focus</p>
                     <ul class="mt-3 min-h-[7.75rem] space-y-2 text-sm leading-6 text-[#d2dae6]">
                       <li v-for="bullet in rewriteFocus" :key="bullet" class="flex gap-3">
                         <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d8bf8a]"></span>
@@ -512,7 +511,7 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <div class="floating-note absolute -bottom-8 left-4 max-w-xs rounded-[26px] border border-white/10 bg-[#f4eee1] p-5 text-[#17233a] shadow-[0_30px_80px_rgba(0,0,0,0.28)] sm:left-8">
+          <div class="floating-note relative mt-5 max-w-full rounded-[26px] border border-white/10 bg-[#f4eee1] p-5 text-[#17233a] shadow-[0_30px_80px_rgba(0,0,0,0.28)] sm:absolute sm:-bottom-8 sm:left-8 sm:mt-0 sm:max-w-xs">
             <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Private by design</p>
             <p class="mt-3 text-base leading-7">
               Resume storage stays inside Chrome on your own machine. The product feels premium because it respects trust.
@@ -521,26 +520,26 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <section class="mx-auto max-w-7xl px-6 pb-24">
+      <section class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-24">
         <div class="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
           <div class="grid gap-px bg-white/10 md:grid-cols-2 xl:grid-cols-4">
             <article v-for="point in proofPoints" :key="point.label" class="bg-[#0e1828] p-6 lg:p-7">
               <p class="text-[0.7rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">{{ point.label }}</p>
-              <h2 class="font-display mt-4 text-3xl leading-tight text-white">{{ point.value }}</h2>
+              <h2 class="font-display mt-4 text-xl leading-tight text-white sm:text-3xl">{{ point.value }}</h2>
               <p class="mt-4 text-sm leading-7 text-[#c4cfdd]">{{ point.description }}</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section id="features" class="mx-auto max-w-7xl px-6 py-24">
+      <section id="features" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
         <div class="grid gap-12 lg:grid-cols-[0.76fr_1.24fr] lg:items-start">
           <div class="lg:pr-10">
             <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Why it converts</p>
-            <h2 class="font-display mt-6 text-4xl leading-tight tracking-[-0.03em] text-white sm:text-5xl lg:text-6xl">
+            <h2 class="font-display mt-6 text-2xl leading-tight tracking-[-0.03em] text-white sm:text-5xl lg:text-6xl">
               This needs to feel like a sharp instrument, not a generic AI landing page.
             </h2>
-            <p class="mt-6 text-lg leading-8 text-[#c4cfdd]">
+            <p class="mt-6 text-sm leading-6 text-[#c4cfdd] sm:text-lg sm:leading-8">
               The product promise is simple: help people make better application decisions faster. The page now speaks in that tone and shows the workflow with enough confidence that install becomes the obvious next step.
             </p>
 
@@ -559,12 +558,12 @@ onUnmounted(() => {
             <article
               v-for="card in featureCards"
               :key="card.title"
-              class="rounded-[30px] border border-white/10 bg-white/[0.04] p-7 shadow-[0_20px_60px_rgba(0,0,0,0.18)] transition hover:-translate-y-1 hover:bg-white/[0.06]"
+              class="rounded-[30px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.18)] transition hover:-translate-y-1 hover:bg-white/[0.06] sm:p-7"
               :class="card.featured ? 'md:col-span-2 md:grid md:grid-cols-[0.72fr_1.28fr] md:items-start md:gap-8' : ''"
             >
               <div>
                 <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">{{ card.eyebrow }}</p>
-                <h3 class="font-display mt-5 text-3xl leading-tight tracking-[-0.03em] text-white sm:text-[2rem]">
+                <h3 class="font-display mt-5 text-xl leading-tight tracking-[-0.03em] text-white sm:text-[2rem]">
                   {{ card.title }}
                 </h3>
               </div>
@@ -576,15 +575,15 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <section id="how-it-works" class="mx-auto max-w-7xl px-6 py-24">
+      <section id="how-it-works" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
         <div class="overflow-hidden rounded-[36px] border border-white/10 bg-[#0c1626] shadow-[0_28px_90px_rgba(0,0,0,0.26)]">
           <div class="grid gap-10 p-6 lg:grid-cols-[0.72fr_1.28fr] lg:p-10 xl:p-12">
             <div class="lg:pr-10">
               <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">How it works</p>
-              <h2 class="font-display mt-6 text-4xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
+              <h2 class="font-display mt-6 text-2xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
                 Three moves. No clutter.
               </h2>
-              <p class="mt-6 text-lg leading-8 text-[#c4cfdd]">
+              <p class="mt-6 text-sm leading-6 text-[#c4cfdd] sm:text-lg sm:leading-8">
                 The best product pages make the workflow obvious. ApplySure only needs three steps, and each one removes friction from the job search instead of adding more.
               </p>
             </div>
@@ -597,13 +596,13 @@ onUnmounted(() => {
               >
                 <div class="grid gap-5 md:grid-cols-[96px_1fr] md:items-start">
                   <div>
-                    <p class="font-display text-5xl leading-none text-[#d8bf8a]">{{ step.index }}</p>
+                    <p class="font-display text-4xl leading-none text-[#d8bf8a] sm:text-5xl">{{ step.index }}</p>
                     <p class="mt-4 inline-flex rounded-full border border-white/10 px-3 py-1 text-[0.64rem] font-bold uppercase tracking-[0.26em] text-[#8fa0ba]">
                       {{ step.detail }}
                     </p>
                   </div>
                   <div>
-                    <h3 class="font-display text-3xl leading-tight text-white">{{ step.title }}</h3>
+                    <h3 class="font-display text-xl leading-tight text-white sm:text-3xl">{{ step.title }}</h3>
                     <p class="mt-4 text-sm leading-7 text-[#c4cfdd]">{{ step.body }}</p>
                   </div>
                 </div>
@@ -613,15 +612,15 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <section id="demo" class="mx-auto max-w-7xl px-6 py-24">
+      <section id="demo" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
         <div class="overflow-hidden rounded-[36px] border border-white/10 bg-[#0a1423] shadow-[0_28px_90px_rgba(0,0,0,0.24)]">
           <div class="p-6 lg:p-10 xl:p-12">
             <div class="mx-auto max-w-3xl text-center">
               <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Demo</p>
-              <h2 class="font-display mt-6 text-4xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
+              <h2 class="font-display mt-6 text-2xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
                 Show the motion, then ask for the install.
               </h2>
-              <p class="mt-6 text-lg leading-8 text-[#c4cfdd]">
+              <p class="mt-6 text-sm leading-6 text-[#c4cfdd] sm:text-lg sm:leading-8">
                 Seeing the extension inside the workflow lowers resistance. The visitor should already understand the value before the Chrome button appears again.
               </p>
             </div>
@@ -646,20 +645,20 @@ onUnmounted(() => {
 
       <section id="faq" class="relative mt-10 bg-[#f3eee3] text-[#17233a]">
         <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#07111f] to-transparent opacity-20"></div>
-        <div class="mx-auto max-w-7xl px-6 py-24">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
           <div class="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
             <div class="lg:pr-10">
               <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">FAQ</p>
-              <h2 class="font-display mt-6 text-4xl leading-tight tracking-[-0.03em] text-[#17233a] sm:text-5xl">
+              <h2 class="font-display mt-6 text-2xl leading-tight tracking-[-0.03em] text-[#17233a] sm:text-5xl">
                 Remove the last objections.
               </h2>
-              <p class="mt-6 text-lg leading-8 text-[#425268]">
+              <p class="mt-6 text-sm leading-6 text-[#425268] sm:text-lg sm:leading-8">
                 The questions that matter most here are cost, privacy, workflow, and where the extension works. Those are answered directly.
               </p>
 
               <div class="light-card mt-10 rounded-[30px] border border-[#d7c9af] bg-white/70 p-6">
                 <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Final conversion push</p>
-                <p class="mt-4 text-base leading-7 text-[#253247]">
+                <p class="mt-4 text-sm leading-6 text-[#253247] sm:text-base sm:leading-7">
                   By the time someone reaches this section, the install CTA should feel low-risk and obvious. The design now supports that instead of diluting it.
                 </p>
               </div>
@@ -673,10 +672,10 @@ onUnmounted(() => {
                 :class="isFAQOpen[index] ? 'border-[#bca371] shadow-[0_20px_60px_rgba(16,24,40,0.08)]' : ''"
               >
                 <button
-                  class="flex w-full items-center justify-between gap-4 p-6 text-left"
+                  class="flex w-full items-center justify-between gap-4 p-5 text-left sm:p-6"
                   @click="toggleFAQ(index)"
                 >
-                  <span class="font-display text-2xl leading-tight text-[#17233a]">{{ faq.question }}</span>
+                  <span class="font-display text-lg leading-tight text-[#17233a] sm:text-2xl">{{ faq.question }}</span>
                   <span
                     class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#d7c9af] text-[#17233a] transition"
                     :class="isFAQOpen[index] ? 'rotate-180 bg-[#17233a] text-white' : 'bg-white'"
@@ -687,7 +686,7 @@ onUnmounted(() => {
                   </span>
                 </button>
                 <div class="overflow-hidden px-6 transition-all duration-300" :class="isFAQOpen[index] ? 'max-h-64 pb-6' : 'max-h-0'">
-                  <p class="max-w-3xl text-base leading-7 text-[#425268]">{{ faq.answer }}</p>
+                  <p class="max-w-3xl text-sm leading-6 text-[#425268] sm:text-base sm:leading-7">{{ faq.answer }}</p>
                 </div>
               </article>
             </div>
@@ -697,10 +696,10 @@ onUnmounted(() => {
             <div class="grid gap-10 px-6 py-10 lg:grid-cols-[1fr_auto] lg:items-center lg:px-10 lg:py-12">
               <div>
                 <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Install ApplySure</p>
-                <h2 class="font-display mt-5 text-4xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
+                <h2 class="font-display mt-5 text-2xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
                   If the page feels confident, the product should be one click away.
                 </h2>
-                <p class="mt-5 max-w-3xl text-lg leading-8 text-[#c4cfdd]">
+                <p class="mt-5 max-w-3xl text-sm leading-6 text-[#c4cfdd] sm:text-lg sm:leading-8">
                   Make the decision once. Add the extension, open a job page, and stop applying blind.
                 </p>
               </div>
@@ -711,7 +710,7 @@ onUnmounted(() => {
                 rel="noopener noreferrer"
                 @click.prevent="openChromeWebStore"
                 style="color: #07111f"
-                class="inline-flex items-center justify-center rounded-full bg-[#f3eee3] px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white"
+                class="inline-flex w-full items-center justify-center rounded-full bg-[#f3eee3] px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white sm:w-auto"
               >
                 Get it on Chrome
               </a>
@@ -722,14 +721,16 @@ onUnmounted(() => {
     </main>
 
     <footer class="relative z-10 border-t border-white/10 bg-[#091220]">
-      <div class="mx-auto max-w-7xl px-6 py-12">
+      <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         <div class="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <div class="flex items-center gap-4">
-              <img src="/logo.png" alt="ApplySure Logo" class="h-12 w-auto object-contain" />
+            <div class="flex items-center gap-3 sm:gap-4">
+              <img src="/logo.png" alt="ApplySure Logo" class="h-10 w-auto object-contain sm:h-12" />
               <div>
-                <p class="font-display text-2xl text-white">ApplySure</p>
-                <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Know before you apply</p>
+                <p class="font-display text-lg text-white sm:text-2xl">ApplySure</p>
+                <p class="text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-[#8fa0ba] sm:text-[0.68rem] sm:tracking-[0.34em]">
+                  Know before you apply
+                </p>
               </div>
             </div>
             <p class="mt-4 max-w-md text-sm leading-7 text-[#9ca9bb]">
