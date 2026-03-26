@@ -3,6 +3,12 @@ import { RouterLink } from 'vue-router'
 import { ref, onMounted } from 'vue'
 
 const currentYear = new Date().getFullYear()
+const chromeWebStoreUrl = 'https://chromewebstore.google.com/detail/applysure/oedpnodmknpdcmhamamfmghlnhjhepkn'
+const openChromeWebStore = () => {
+  if (typeof window !== 'undefined') {
+    window.open(chromeWebStoreUrl, '_blank', 'noopener,noreferrer')
+  }
+}
 
 const isFAQOpen = ref<Record<number, boolean>>({})
 
@@ -112,7 +118,7 @@ const getDashArray = () => {
           <a href="#how-it-works" class="text-slate-600 hover:text-[#143e80] font-medium transition-colors">How It Works</a>
           <a href="#features" class="text-slate-600 hover:text-[#143e80] font-medium transition-colors">Features</a>
           <a href="#faq" class="text-slate-600 hover:text-[#143e80] font-medium transition-colors">FAQ</a>
-          <a href="#" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#3399f5] to-[#143e80] text-white font-semibold flex items-center gap-2 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#3399f5]/30 transition-all border-none">Add to Chrome</a>
+          <a :href="chromeWebStoreUrl" target="_blank" rel="noopener noreferrer" @click.prevent="openChromeWebStore" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#3399f5] to-[#143e80] text-white font-semibold flex items-center gap-2 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#3399f5]/30 transition-all border-none">Add to Chrome</a>
         </nav>
       </div>
     </header>
@@ -139,11 +145,8 @@ const getDashArray = () => {
           </p>
           
           <div class="flex flex-col items-center lg:items-start gap-4 animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
-            <a href="#" class="px-8 py-4 rounded-full bg-gradient-to-r from-[#3399f5] to-[#143e80] text-white font-bold text-lg flex items-center gap-3 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#3399f5]/30 transition-all border-none group">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="group-hover:rotate-12 transition-transform">
-                <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" fill="currentColor"/>
-                <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+            <a :href="chromeWebStoreUrl" target="_blank" rel="noopener noreferrer" @click.prevent="openChromeWebStore" class="px-8 py-4 rounded-full bg-gradient-to-r from-[#3399f5] to-[#143e80] text-white font-bold text-lg flex items-center gap-3 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#3399f5]/30 transition-all border-none group">
+              <img src="/chrome.svg" alt="" aria-hidden="true" class="w-8 h-8 rounded-full object-cover" />
               Add to Chrome — It's Free
             </a>
             <p class="text-sm font-medium text-slate-500">Works on LinkedIn & Naukri · No sign-up required · 100% Private</p>
@@ -358,6 +361,26 @@ const getDashArray = () => {
         </div>
       </section>
 
+      <!-- Demo Video Section -->
+      <section class="max-w-5xl mx-auto px-6 py-24">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 text-[#143e80]">Watch ApplySure in Action</h2>
+          <p class="text-xl text-slate-500">Quick walkthrough before you install.</p>
+        </div>
+        <div class="rounded-3xl overflow-hidden border border-slate-200 shadow-xl bg-black">
+          <iframe
+            class="w-full"
+            style="aspect-ratio: 16 / 9;"
+            src="https://www.youtube.com/embed/oU7qxLPs-a8"
+            title="ApplySure Demo Video"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </section>
+
       <!-- FAQ Section Tailwind -->
       <section id="faq" class="max-w-4xl mx-auto px-6 py-24">
         <div class="text-center mb-16">
@@ -389,7 +412,7 @@ const getDashArray = () => {
           <div class="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
             <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">Start your smarter job search today.</h2>
             <p class="text-xl text-blue-100 mb-10">Get instant insights and a tailored resume for every application.</p>
-            <a href="#" class="px-8 py-4 bg-white text-[#143e80] rounded-full font-bold text-xl flex items-center gap-3 hover:scale-105 hover:bg-slate-50 transition-all shadow-xl">
+            <a :href="chromeWebStoreUrl" target="_blank" rel="noopener noreferrer" @click.prevent="openChromeWebStore" class="px-8 py-4 bg-white text-[#143e80] rounded-full font-bold text-xl flex items-center gap-3 hover:scale-105 hover:bg-slate-50 transition-all shadow-xl">
               Get ApplySure for Free
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -418,7 +441,7 @@ const getDashArray = () => {
               <h4 class="text-white font-semibold text-lg">Product</h4>
               <a href="#how-it-works" class="text-slate-400 hover:text-white transition-colors">How it Works</a>
               <a href="#features" class="text-slate-400 hover:text-white transition-colors">Features</a>
-              <a href="#" class="text-slate-400 hover:text-white transition-colors">Chrome Web Store</a>
+              <a :href="chromeWebStoreUrl" class="text-slate-400 hover:text-white transition-colors">Chrome Web Store</a>
             </div>
             <div class="flex flex-col gap-4">
               <h4 class="text-white font-semibold text-lg">Legal</h4>

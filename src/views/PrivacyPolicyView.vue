@@ -108,7 +108,7 @@ import { RouterLink } from 'vue-router'
         <h2>9. CONTACT</h2>
         <p>If you have any questions or concerns about this Privacy Policy, please contact us at:</p>
         <p>Email: labhishetttsaikalyan@gmail.com</p>
-        <p>Website: <a href="https://applysure-webiste.vercel.app/" target="_blank" rel="noopener noreferrer">https://applysure-webiste.vercel.app/</a></p>
+        <p>Website: <a href="https://applysure.space/" target="_blank" rel="noopener noreferrer">https://applysure.space/</a></p>
       </section>
     </main>
 
