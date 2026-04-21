@@ -267,7 +267,7 @@ onUnmounted(() => {
           <img src="/logo.png" alt="ApplySure Logo" class="h-10 w-auto object-contain sm:h-14" />
           <div>
             <p class="font-display text-xl tracking-tight text-white sm:text-3xl">ApplySure</p>
-            <p class="hidden text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-[#8fa0ba] sm:block sm:text-[0.72rem]">
+            <p class="hidden text-[0.65rem] font-semibold tracking-wide text-[#8fa0ba] sm:block sm:text-[0.72rem]">
               Know before you apply
             </p>
           </div>
@@ -278,7 +278,7 @@ onUnmounted(() => {
             v-for="link in navLinks"
             :key="link.href"
             :href="link.href"
-            class="text-sm font-semibold uppercase tracking-[0.26em] text-[#a6b4c8] transition hover:text-white"
+            class="text-sm font-semibold tracking-normal text-[#a6b4c8] transition hover:text-white"
           >
             {{ link.label }}
           </a>
@@ -290,7 +290,7 @@ onUnmounted(() => {
           rel="noopener noreferrer"
           @click.prevent="openChromeWebStore"
           style="color: #07111f"
-          class="hidden rounded-full border border-[#d8bf8a]/40 bg-[#f3eee3] px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white md:inline-flex"
+          class="hidden rounded-full border border-[#d8bf8a]/40 bg-[#f3eee3] px-5 py-3 text-sm font-bold tracking-normal text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white md:inline-flex"
         >
           Add to Chrome
         </a>
@@ -300,7 +300,7 @@ onUnmounted(() => {
     <main class="relative z-10">
       <section id="top" class="mx-auto max-w-5xl px-4 pb-14 pt-28 text-center sm:px-6 sm:pt-32 lg:pt-40">
         <div class="flex flex-col items-center motion-safe:animate-[liftIn_800ms_cubic-bezier(0.16,1,0.3,1)_both]">
-          <div class="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-[#d8bf8a]/25 bg-white/5 px-3 py-2 text-center text-[0.64rem] font-semibold uppercase tracking-[0.22em] text-[#d8bf8a] sm:gap-3 sm:px-4 sm:text-[0.72rem] sm:tracking-[0.3em]">
+          <div class="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-[#d8bf8a]/25 bg-white/5 px-3 py-2 text-center text-[0.64rem] font-semibold tracking-wide text-[#d8bf8a] sm:gap-3 sm:px-4 sm:text-[0.72rem]">
             <span class="h-2 w-2 rounded-full bg-[#d8bf8a]"></span>
             Premium decision support for job seekers
           </div>
@@ -322,34 +322,34 @@ onUnmounted(() => {
               rel="noopener noreferrer"
               @click.prevent="openChromeWebStore"
               style="color: #07111f"
-              class="inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#f3eee3] px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white sm:w-auto"
+              class="inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#f3eee3] px-7 py-4 text-sm font-bold tracking-normal text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white sm:w-auto"
             >
               <img src="/chrome.svg" alt="" aria-hidden="true" class="h-7 w-7 rounded-full object-cover" />
               Install the extension
             </a>
             <a
               href="#demo"
-              class="inline-flex w-full items-center justify-center rounded-full border border-white/14 px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-white transition hover:border-white/30 hover:bg-white/5 sm:w-auto"
+              class="inline-flex w-full items-center justify-center rounded-full border border-white/14 px-7 py-4 text-sm font-bold tracking-normal text-white transition hover:border-white/30 hover:bg-white/5 sm:w-auto"
             >
               Watch the demo
             </a>
           </div>
 
-          <p class="mt-4 text-xs uppercase tracking-[0.18em] text-[#8fa0ba] sm:text-sm sm:tracking-[0.25em]">
+          <p class="mt-4 text-xs tracking-wide text-[#8fa0ba] sm:text-sm">
             Free to use. No sign-up. Resume stays on your device.
           </p>
 
           <div class="mt-12 grid w-full gap-4 sm:grid-cols-3">
             <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-sm">
-              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">Move faster</p>
+              <p class="text-[0.72rem] font-semibold tracking-wide text-[#8fa0ba]">Move faster</p>
               <p class="mt-3 font-display text-xl text-white sm:text-2xl">Know the fit first.</p>
             </div>
             <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-sm">
-              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">Avoid guesswork</p>
+              <p class="text-[0.72rem] font-semibold tracking-wide text-[#8fa0ba]">Avoid guesswork</p>
               <p class="mt-3 font-display text-xl text-white sm:text-2xl">See the missing signals.</p>
             </div>
             <div class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-sm">
-              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">Apply cleaner</p>
+              <p class="text-[0.72rem] font-semibold tracking-wide text-[#8fa0ba]">Apply cleaner</p>
               <p class="mt-3 font-display text-xl text-white sm:text-2xl">Rewrite for the role.</p>
             </div>
           </div>
@@ -369,7 +369,7 @@ onUnmounted(() => {
                 <span class="h-3 w-3 rounded-full bg-[#f1bf58]"></span>
                 <span class="h-3 w-3 rounded-full bg-[#5fd48b]"></span>
               </div>
-              <span class="rounded-full border border-[#d8bf8a]/30 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.2em] text-[#d8bf8a] sm:tracking-[0.28em]">
+              <span class="rounded-full border border-[#d8bf8a]/30 px-3 py-1 text-[0.6rem] font-bold tracking-wide text-[#d8bf8a]">
                 Chrome side panel
               </span>
             </div>
@@ -378,22 +378,22 @@ onUnmounted(() => {
               <article class="rounded-[28px] bg-[#efe6d6] p-4 text-[#17233a] sm:p-6">
                 <div class="flex flex-col items-start justify-between gap-3 sm:flex-row sm:gap-4">
                   <div>
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Job brief</p>
+                    <p class="text-[0.68rem] font-semibold tracking-wide text-[#7a6f5a]">Job brief</p>
                     <h2 class="font-display mt-3 text-xl leading-tight sm:text-3xl">Senior Product Designer</h2>
                     <p class="mt-2 text-sm font-medium text-[#5a6473]">B2B platform · Growth and experimentation</p>
                   </div>
-                  <span class="rounded-full bg-[#17233a] px-3 py-1 text-[0.64rem] font-bold uppercase tracking-[0.26em] text-white">
+                  <span class="rounded-full bg-[#17233a] px-3 py-1 text-[0.64rem] font-bold tracking-wide text-white">
                     LinkedIn
                   </span>
                 </div>
 
                 <div class="mt-8 space-y-5">
                   <div>
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[#7a6f5a]">Need to demonstrate</p>
+                    <p class="text-[0.68rem] font-semibold tracking-wide text-[#7a6f5a]">Need to demonstrate</p>
                     <div class="mt-3 flex flex-wrap gap-2">
-                      <span class="rounded-full border border-[#d3c3a7] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#17233a]">System thinking</span>
-                      <span class="rounded-full border border-[#d3c3a7] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#17233a]">Metrics ownership</span>
-                      <span class="rounded-full border border-[#d3c3a7] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#17233a]">Cross-functional leadership</span>
+                      <span class="rounded-full border border-[#d3c3a7] px-3 py-1 text-xs font-semibold tracking-normal text-[#17233a]">System thinking</span>
+                      <span class="rounded-full border border-[#d3c3a7] px-3 py-1 text-xs font-semibold tracking-normal text-[#17233a]">Metrics ownership</span>
+                      <span class="rounded-full border border-[#d3c3a7] px-3 py-1 text-xs font-semibold tracking-normal text-[#17233a]">Cross-functional leadership</span>
                     </div>
                   </div>
 
@@ -405,7 +405,7 @@ onUnmounted(() => {
                   </div>
 
                   <div class="rounded-[22px] border border-[#d3c3a7] bg-white/50 p-5">
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Hiring signal</p>
+                    <p class="text-[0.68rem] font-semibold tracking-wide text-[#7a6f5a]">Hiring signal</p>
                     <p class="mt-3 text-sm leading-6 text-[#253247] sm:text-base sm:leading-7">
                       The role values clarity, execution, and measurable product impact. Your resume needs that story sooner.
                     </p>
@@ -417,10 +417,10 @@ onUnmounted(() => {
                 <div class="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#d8bf8a] to-transparent opacity-50"></div>
                 <div class="flex items-start justify-between gap-4">
                   <div>
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">ApplySure analysis</p>
+                    <p class="text-[0.68rem] font-semibold tracking-wide text-[#8fa0ba]">ApplySure analysis</p>
                     <h2 class="font-display mt-3 text-xl leading-tight text-white sm:text-3xl">Ready to submit?</h2>
                   </div>
-                  <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.28em] text-[#d8bf8a]">
+                  <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[0.62rem] font-bold tracking-wide text-[#d8bf8a]">
                     Live
                   </span>
                 </div>
@@ -453,14 +453,14 @@ onUnmounted(() => {
                       >
                         {{ currentScore }}%
                       </span>
-                      <span class="mt-2 flex min-h-[2.5rem] max-w-[9rem] items-center justify-center text-center text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-[#8fa0ba] sm:text-[0.68rem] sm:tracking-[0.34em]">
+                      <span class="mt-2 flex min-h-[2.5rem] max-w-[9rem] items-center justify-center text-center text-[0.62rem] font-semibold tracking-wide text-[#8fa0ba] sm:text-[0.68rem]">
                         {{ scoreLabel }}
                       </span>
                     </div>
                   </div>
 
                   <div class="flex-1 rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Interpretation</p>
+                    <p class="text-[0.68rem] font-semibold tracking-wide text-[#8fa0ba]">Interpretation</p>
                     <p class="mt-3 text-sm leading-6 text-[#d2dae6] sm:text-base sm:leading-7">
                       High-fit role. Tighten the leadership narrative and bring measurable outcomes forward before you apply.
                     </p>
@@ -469,7 +469,7 @@ onUnmounted(() => {
 
                 <div class="mt-8 space-y-4">
                   <div v-for="row in analysisRows" :key="row.label">
-                    <div class="mb-2 flex items-center justify-between text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#8fa0ba]">
+                    <div class="mb-2 flex items-center justify-between text-[0.68rem] font-semibold tracking-wide text-[#8fa0ba]">
                       <span>{{ row.label }}</span>
                       <span class="[font-variant-numeric:tabular-nums]">{{ row.value }}%</span>
                     </div>
@@ -485,12 +485,12 @@ onUnmounted(() => {
 
                 <div class="mt-8 grid items-stretch gap-4 sm:grid-cols-2">
                   <div class="rounded-[22px] border border-white/8 bg-white/[0.03] p-4 sm:min-h-[10.5rem]">
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#8fa0ba] sm:tracking-[0.34em]">Missing signals</p>
+                    <p class="text-[0.68rem] font-semibold tracking-wide text-[#8fa0ba]">Missing signals</p>
                     <div class="mt-3 flex min-h-[4.75rem] flex-wrap content-start gap-2">
                       <span
                         v-for="chip in missingSignalChips"
                         :key="chip"
-                        class="rounded-full border border-[#31435f] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#e5e0d3]"
+                        class="rounded-full border border-[#31435f] px-3 py-1 text-xs font-semibold tracking-normal text-[#e5e0d3]"
                       >
                         {{ chip }}
                       </span>
@@ -498,7 +498,7 @@ onUnmounted(() => {
                   </div>
 
                   <div class="rounded-[22px] border border-white/8 bg-white/[0.03] p-4 sm:min-h-[10.5rem]">
-                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#8fa0ba] sm:tracking-[0.34em]">Resume rewrite focus</p>
+                    <p class="text-[0.68rem] font-semibold tracking-wide text-[#8fa0ba]">Resume rewrite focus</p>
                     <ul class="mt-3 min-h-[7.75rem] space-y-2 text-sm leading-6 text-[#d2dae6]">
                       <li v-for="bullet in rewriteFocus" :key="bullet" class="flex gap-3">
                         <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d8bf8a]"></span>
@@ -512,7 +512,7 @@ onUnmounted(() => {
           </div>
 
           <div class="floating-note relative mt-5 max-w-full rounded-[26px] border border-white/10 bg-[#f4eee1] p-5 text-[#17233a] shadow-[0_30px_80px_rgba(0,0,0,0.28)] sm:absolute sm:-bottom-8 sm:left-8 sm:mt-0 sm:max-w-xs">
-            <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Private by design</p>
+            <p class="text-[0.68rem] font-semibold tracking-wide text-[#7a6f5a]">Private by design</p>
             <p class="mt-3 text-base leading-7">
               Resume storage stays inside Chrome on your own machine. The product feels premium because it respects trust.
             </p>
@@ -524,7 +524,7 @@ onUnmounted(() => {
         <div class="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
           <div class="grid gap-px bg-white/10 md:grid-cols-2 xl:grid-cols-4">
             <article v-for="point in proofPoints" :key="point.label" class="bg-[#0e1828] p-6 lg:p-7">
-              <p class="text-[0.7rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">{{ point.label }}</p>
+              <p class="text-[0.7rem] font-semibold tracking-wide text-[#8fa0ba]">{{ point.label }}</p>
               <h2 class="font-display mt-4 text-xl leading-tight text-white sm:text-3xl">{{ point.value }}</h2>
               <p class="mt-4 text-sm leading-7 text-[#c4cfdd]">{{ point.description }}</p>
             </article>
@@ -535,7 +535,7 @@ onUnmounted(() => {
       <section id="features" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
         <div class="grid gap-12 lg:grid-cols-[0.76fr_1.24fr] lg:items-start">
           <div class="lg:pr-10">
-            <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Why it converts</p>
+            <p class="text-[0.72rem] font-semibold tracking-wide text-[#d8bf8a]">Why it converts</p>
             <h2 class="font-display mt-6 text-2xl leading-tight tracking-[-0.03em] text-white sm:text-5xl lg:text-6xl">
               This needs to feel like a sharp instrument, not a generic AI landing page.
             </h2>
@@ -544,7 +544,7 @@ onUnmounted(() => {
             </p>
 
             <div class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.04] p-6">
-              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#8fa0ba]">Built for decisive applicants</p>
+              <p class="text-[0.72rem] font-semibold tracking-wide text-[#8fa0ba]">Built for decisive applicants</p>
               <ul class="mt-5 space-y-4 text-sm leading-7 text-[#d2dae6]">
                 <li v-for="principle in operatingPrinciples" :key="principle" class="flex gap-3">
                   <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d8bf8a]"></span>
@@ -562,7 +562,7 @@ onUnmounted(() => {
               :class="card.featured ? 'md:col-span-2 md:grid md:grid-cols-[0.72fr_1.28fr] md:items-start md:gap-8' : ''"
             >
               <div>
-                <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">{{ card.eyebrow }}</p>
+                <p class="text-[0.72rem] font-semibold tracking-wide text-[#d8bf8a]">{{ card.eyebrow }}</p>
                 <h3 class="font-display mt-5 text-xl leading-tight tracking-[-0.03em] text-white sm:text-[2rem]">
                   {{ card.title }}
                 </h3>
@@ -579,7 +579,7 @@ onUnmounted(() => {
         <div class="overflow-hidden rounded-[36px] border border-white/10 bg-[#0c1626] shadow-[0_28px_90px_rgba(0,0,0,0.26)]">
           <div class="grid gap-10 p-6 lg:grid-cols-[0.72fr_1.28fr] lg:p-10 xl:p-12">
             <div class="lg:pr-10">
-              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">How it works</p>
+              <p class="text-[0.72rem] font-semibold tracking-wide text-[#d8bf8a]">How it works</p>
               <h2 class="font-display mt-6 text-2xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
                 Three moves. No clutter.
               </h2>
@@ -597,7 +597,7 @@ onUnmounted(() => {
                 <div class="grid gap-5 md:grid-cols-[96px_1fr] md:items-start">
                   <div>
                     <p class="font-display text-4xl leading-none text-[#d8bf8a] sm:text-5xl">{{ step.index }}</p>
-                    <p class="mt-4 inline-flex rounded-full border border-white/10 px-3 py-1 text-[0.64rem] font-bold uppercase tracking-[0.26em] text-[#8fa0ba]">
+                    <p class="mt-4 inline-flex rounded-full border border-white/10 px-3 py-1 text-[0.64rem] font-bold tracking-wide text-[#8fa0ba]">
                       {{ step.detail }}
                     </p>
                   </div>
@@ -616,7 +616,7 @@ onUnmounted(() => {
         <div class="overflow-hidden rounded-[36px] border border-white/10 bg-[#0a1423] shadow-[0_28px_90px_rgba(0,0,0,0.24)]">
           <div class="p-6 lg:p-10 xl:p-12">
             <div class="mx-auto max-w-3xl text-center">
-              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Demo</p>
+              <p class="text-[0.72rem] font-semibold tracking-wide text-[#d8bf8a]">Demo</p>
               <h2 class="font-display mt-6 text-2xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
                 Show the motion, then ask for the install.
               </h2>
@@ -648,7 +648,7 @@ onUnmounted(() => {
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
           <div class="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
             <div class="lg:pr-10">
-              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">FAQ</p>
+              <p class="text-[0.72rem] font-semibold tracking-wide text-[#7a6f5a]">FAQ</p>
               <h2 class="font-display mt-6 text-2xl leading-tight tracking-[-0.03em] text-[#17233a] sm:text-5xl">
                 Remove the last objections.
               </h2>
@@ -657,7 +657,7 @@ onUnmounted(() => {
               </p>
 
               <div class="light-card mt-10 rounded-[30px] border border-[#d7c9af] bg-white/70 p-6">
-                <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#7a6f5a]">Final conversion push</p>
+                <p class="text-[0.72rem] font-semibold tracking-wide text-[#7a6f5a]">Final conversion push</p>
                 <p class="mt-4 text-sm leading-6 text-[#253247] sm:text-base sm:leading-7">
                   By the time someone reaches this section, the install CTA should feel low-risk and obvious. The design now supports that instead of diluting it.
                 </p>
@@ -695,7 +695,7 @@ onUnmounted(() => {
           <div class="mt-20 overflow-hidden rounded-[38px] bg-[#0d1728] text-[#f4f0e8] shadow-[0_32px_100px_rgba(0,0,0,0.26)]">
             <div class="grid gap-10 px-6 py-10 lg:grid-cols-[1fr_auto] lg:items-center lg:px-10 lg:py-12">
               <div>
-                <p class="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Install ApplySure</p>
+                <p class="text-[0.72rem] font-semibold tracking-wide text-[#d8bf8a]">Install ApplySure</p>
                 <h2 class="font-display mt-5 text-2xl leading-tight tracking-[-0.03em] text-white sm:text-5xl">
                   If the page feels confident, the product should be one click away.
                 </h2>
@@ -710,7 +710,7 @@ onUnmounted(() => {
                 rel="noopener noreferrer"
                 @click.prevent="openChromeWebStore"
                 style="color: #07111f"
-                class="inline-flex w-full items-center justify-center rounded-full bg-[#f3eee3] px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white sm:w-auto"
+                class="inline-flex w-full items-center justify-center rounded-full bg-[#f3eee3] px-8 py-4 text-sm font-bold tracking-normal text-[#07111f] transition hover:-translate-y-0.5 hover:bg-white sm:w-auto"
               >
                 Get it on Chrome
               </a>
@@ -728,7 +728,7 @@ onUnmounted(() => {
               <img src="/logo.png" alt="ApplySure Logo" class="h-10 w-auto object-contain sm:h-12" />
               <div>
                 <p class="font-display text-lg text-white sm:text-2xl">ApplySure</p>
-                <p class="text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-[#8fa0ba] sm:text-[0.68rem] sm:tracking-[0.34em]">
+                <p class="text-[0.62rem] font-semibold tracking-wide text-[#8fa0ba] sm:text-[0.68rem]">
                   Know before you apply
                 </p>
               </div>
@@ -740,13 +740,13 @@ onUnmounted(() => {
 
           <div class="flex flex-wrap gap-10 text-sm text-[#9ca9bb]">
             <div class="space-y-3">
-              <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Explore</p>
+              <p class="text-[0.68rem] font-semibold tracking-wide text-[#d8bf8a]">Explore</p>
               <a href="#features" class="block transition hover:text-white">Why ApplySure</a>
               <a href="#how-it-works" class="block transition hover:text-white">How it works</a>
               <a href="#demo" class="block transition hover:text-white">Demo</a>
             </div>
             <div class="space-y-3">
-              <p class="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#d8bf8a]">Legal</p>
+              <p class="text-[0.68rem] font-semibold tracking-wide text-[#d8bf8a]">Legal</p>
               <RouterLink to="/privacy" class="block transition hover:text-white">Privacy Policy</RouterLink>
               <a
                 :href="chromeWebStoreUrl"

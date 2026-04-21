@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
-  --font-body: "Avenir Next", "Segoe UI", "Helvetica Neue", Helvetica, sans-serif;
+  --font-display: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-body: "Figtree", "Segoe UI", "Helvetica Neue", Helvetica, sans-serif;
   --color-canvas: #07111f;
   --color-ink: #f3eee3;
   --color-accent: #d8bf8a;
